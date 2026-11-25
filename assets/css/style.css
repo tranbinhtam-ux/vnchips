@@ -4548,6 +4548,65 @@ a.key-team-card {
   border-bottom-color: var(--primary-orange);
 }
 
+/* Anti-spam challenge on the inquiry form */
+.contact-captcha-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.contact-captcha-img {
+  display: block;
+  height: 60px;
+  width: auto;
+  border-radius: 8px;
+  border: 1px solid #CBD5E1;
+  background: #F8FAFC;
+  flex: none;
+  user-select: none;
+}
+
+.contact-captcha-reload {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid #CBD5E1;
+  background: #FFFFFF;
+  color: #64748B;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.contact-captcha-reload:hover {
+  color: var(--primary-orange);
+  border-color: var(--primary-orange);
+  transform: rotate(90deg);
+}
+
+.contact-captcha-input {
+  flex: 1 1 160px;
+  min-width: 140px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.contact-captcha-hint {
+  display: block;
+  margin-top: 8px;
+  color: #94A3B8;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 480px) {
+  .contact-captcha-input {
+    flex: 1 1 100%;
+  }
+}
+
 .contact-submit-btn {
   background: var(--primary-orange);
   color: #FFFFFF;

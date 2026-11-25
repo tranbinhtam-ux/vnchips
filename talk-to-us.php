@@ -5,38 +5,82 @@
  */
 
 require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/models/Admin.php';
+require_once __DIR__ . '/models/Captcha.php';
+require_once __DIR__ . '/models/Mailer.php';
 
 $successMessage = '';
 $errorMessage = '';
 
+$captchaEnabled = Setting::get('contact_captcha_enabled', '1') === '1' && Captcha::isAvailable();
+
+// Keeps what the visitor typed when the post is rejected, so a failed captcha does not
+// cost them the whole message.
+$form = [
+    'first_name' => '', 'last_name' => '', 'phone' => '',
+    'email' => '', 'company' => '', 'country' => '', 'message' => '',
+];
+
 // Handle Form Submission
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
-    $firstName = trim($_POST['first_name'] ?? '');
-    $lastName = trim($_POST['last_name'] ?? '');
-    $fullname = trim($firstName . ' ' . $lastName);
-    $email = trim($_POST['email'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
-    $company = trim($_POST['company'] ?? '');
-    $country = trim($_POST['country'] ?? '');
-    $message = trim($_POST['message'] ?? '');
+    foreach ($form as $field => $_) {
+        $form[$field] = trim($_POST[$field] ?? '');
+    }
 
-    if (empty($firstName) || empty($email) || empty($message)) {
+    $firstName = $form['first_name'];
+    $fullname  = trim($form['first_name'] . ' ' . $form['last_name']);
+    $senderEmail = $form['email'];
+    $country   = $form['country'];
+    $spamReason = null;
+
+    if (!Captcha::checkAntiSpam($spamReason)) {
+        $errorMessage = $spamReason;
+    } elseif ($captchaEnabled && !Captcha::verify($_POST['captcha'] ?? '', $spamReason)) {
+        $errorMessage = $spamReason;
+    } elseif (empty($firstName) || empty($senderEmail) || empty($form['message'])) {
         $errorMessage = 'Please fill in all required fields (First Name, Email, and Message).';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    } elseif (!filter_var($senderEmail, FILTER_VALIDATE_EMAIL)) {
         $errorMessage = 'Please provide a valid email address.';
     } else {
         $db = Database::getInstance()->getConnection();
+        $inquiry = [
+            'fullname'         => $fullname,
+            'email'            => $senderEmail,
+            'phone'            => $form['phone'],
+            'company'          => $form['company'],
+            'service_interest' => !empty($country) ? "Country: $country" : 'General Inquiry',
+            'message'          => $form['message'],
+        ];
+
+        $stored = false;
         if ($db) {
             try {
-                $serviceInterest = !empty($country) ? "Country: $country" : "General Inquiry";
                 $stmt = $db->prepare("INSERT INTO `inquiries` (`fullname`, `email`, `phone`, `company`, `service_interest`, `message`) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$fullname, $email, $phone, $company, $serviceInterest, $message]);
-                $successMessage = 'Thank you for reaching out! Our semiconductor engineering team has received your inquiry and will respond promptly.';
+                $stmt->execute(array_values($inquiry));
+                $stored = true;
             } catch (PDOException $e) {
+                error_log('Inquiry insert failed: ' . $e->getMessage());
                 $errorMessage = 'Failed to submit your inquiry. Please try again later or email us directly.';
             }
         } else {
-            $successMessage = 'Thank you! Your message has been received.';
+            $stored = true; // no database on this host: fall through to the notification
+        }
+
+        if ($stored) {
+            $successMessage = 'Thank you for reaching out! Our semiconductor engineering team has received your inquiry and will respond promptly.';
+            $form = array_map(static function () { return ''; }, $form);
+
+            // The inquiry is already safe in the database; a mail failure must not be shown
+            // to the visitor or stop them from getting the confirmation.
+            if (Mailer::config('contact_notify_enabled') === '1') {
+                $body = Mailer::inquiryNotificationBody($inquiry, absolute_url(ADMIN_DIR . '/inquiries.php'));
+                foreach (Mailer::notifyRecipients() as $recipient) {
+                    $mailError = null;
+                    if (!Mailer::send($recipient, 'VNCHIP - Liên hệ mới từ ' . $inquiry['fullname'], $body, $mailError, $inquiry['email'])) {
+                        error_log('Inquiry notification to ' . $recipient . ' failed: ' . $mailError);
+                    }
+                }
+            }
         }
     }
 }
@@ -149,52 +193,84 @@ require_once __DIR__ . '/includes/header.php';
               <!-- First Name -->
               <div class="contact-input-wrap">
                 <label class="contact-input-label" for="first_name">First Name*</label>
-                <input type="text" id="first_name" name="first_name" required class="contact-input" placeholder="">
+                <input type="text" id="first_name" name="first_name" required class="contact-input" value="<?= e($form['first_name']) ?>" placeholder="">
               </div>
 
               <!-- Last Name -->
               <div class="contact-input-wrap">
                 <label class="contact-input-label" for="last_name">Last Name*</label>
-                <input type="text" id="last_name" name="last_name" required class="contact-input" placeholder="">
+                <input type="text" id="last_name" name="last_name" required class="contact-input" value="<?= e($form['last_name']) ?>" placeholder="">
               </div>
 
               <!-- Contact Number -->
               <div class="contact-input-wrap">
                 <label class="contact-input-label" for="phone">Contact Number</label>
-                <input type="tel" id="phone" name="phone" class="contact-input" placeholder="">
+                <input type="tel" id="phone" name="phone" class="contact-input" value="<?= e($form['phone']) ?>" placeholder="">
               </div>
 
               <!-- Email -->
               <div class="contact-input-wrap">
                 <label class="contact-input-label" for="email">Email*</label>
-                <input type="email" id="email" name="email" required class="contact-input" placeholder="">
+                <input type="email" id="email" name="email" required class="contact-input" value="<?= e($form['email']) ?>" placeholder="">
               </div>
 
               <!-- Company Name -->
               <div class="contact-input-wrap">
                 <label class="contact-input-label" for="company">Company Name*</label>
-                <input type="text" id="company" name="company" required class="contact-input" placeholder="">
+                <input type="text" id="company" name="company" required class="contact-input" value="<?= e($form['company']) ?>" placeholder="">
               </div>
 
               <!-- Country -->
               <div class="contact-input-wrap">
                 <label class="contact-input-label" for="country">Country*</label>
-                <input type="text" id="country" name="country" required class="contact-input" placeholder="Select your country">
+                <input type="text" id="country" name="country" required class="contact-input" value="<?= e($form['country']) ?>" placeholder="Select your country">
               </div>
 
               <!-- Message -->
               <div class="contact-input-wrap contact-form-full">
                 <label class="contact-input-label" for="message">Message*</label>
-                <textarea id="message" name="message" rows="3" required class="contact-textarea" placeholder=""></textarea>
+                <textarea id="message" name="message" rows="3" required class="contact-textarea" placeholder=""><?= e($form['message']) ?></textarea>
               </div>
 
+              <?php if ($captchaEnabled): ?>
+              <!-- Anti-spam challenge -->
+              <div class="contact-input-wrap contact-form-full">
+                <label class="contact-input-label" for="captcha">Security Check*</label>
+                <div class="contact-captcha-row">
+                  <img src="<?= url('captcha.php') ?>" alt="Security code" id="captchaImage" class="contact-captcha-img" width="190" height="60">
+                  <button type="button" id="captchaReload" class="contact-captcha-reload" title="Get a new code" aria-label="Get a new code">
+                    <i class="fa-solid fa-rotate"></i>
+                  </button>
+                  <input type="text" id="captcha" name="captcha" required maxlength="8" autocomplete="off"
+                         spellcheck="false" class="contact-input contact-captcha-input" placeholder="Type the 5 characters">
+                </div>
+                <small class="contact-captcha-hint">Not case sensitive. Click the arrows for a different code.</small>
+              </div>
+              <?php endif; ?>
+
             </div>
+
+            <?= Captcha::antiSpamFields() ?>
 
             <button type="submit" class="contact-submit-btn">
               Submit Inquiry
             </button>
 
           </form>
+
+          <script>
+          (function () {
+            var img = document.getElementById('captchaImage');
+            var btn = document.getElementById('captchaReload');
+            if (img && btn) {
+              btn.addEventListener('click', function () {
+                img.src = '<?= url('captcha.php') ?>?r=' + Date.now();
+                var field = document.getElementById('captcha');
+                if (field) { field.value = ''; field.focus(); }
+              });
+            }
+          })();
+          </script>
 
         </div>
       </div>
