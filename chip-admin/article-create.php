@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
       removeButtons: 'Save,NewPage,ExportPdf,Preview,Print',
       extraPlugins: 'uploadimage,justify',
       baseHref: '<?= url() ?>/',
-      contentsCss: ['https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'],
+      contentsCss: ['https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', '<?= admin_url('assets/css/editor-content.css') ?>?v=<?= @filemtime(__DIR__ . '/assets/css/editor-content.css') ?>'],
     });
 
     ckInstance.on('change', function() {

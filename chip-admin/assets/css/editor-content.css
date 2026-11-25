@@ -1,0 +1,54 @@
+/*
+ * CKEditor 4 editing-area stylesheet (loaded inside the editor iframe).
+ * Loaded AFTER Bootstrap in `contentsCss`, so it wins on conflicts.
+ * Gives the typing area breathing room instead of text hugging the border.
+ */
+
+body {
+  margin: 0;
+  padding: 20px 26px 28px;
+  background: #FFFFFF;
+  color: #1E293B;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.8;
+  word-wrap: break-word;
+}
+
+body > *:first-child { margin-top: 0; }
+body > *:last-child { margin-bottom: 0; }
+
+p { margin: 0 0 16px; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.35;
+  margin: 28px 0 12px;
+}
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.45rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.1rem; }
+
+ul, ol { margin: 0 0 16px; padding-left: 26px; }
+li { margin-bottom: 6px; }
+
+a { color: #E67E22; }
+
+img { max-width: 100%; height: auto; border-radius: 8px; }
+
+blockquote {
+  margin: 20px 0;
+  padding: 12px 20px;
+  border-left: 4px solid #E67E22;
+  background: #F8FAFC;
+  color: #334155;
+  font-style: italic;
+}
+
+table { border-collapse: collapse; }
+table td, table th { border: 1px solid #E2E8F0; padding: 8px 12px; }
+table th { background: #F1F5F9; font-weight: 700; }
+
+hr { border: 0; border-top: 1px solid #E2E8F0; margin: 24px 0; }
