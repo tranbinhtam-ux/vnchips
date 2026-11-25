@@ -42,6 +42,25 @@ function admin_url($path = '') {
 }
 
 /**
+ * Generate a fully qualified URL (scheme + host + path).
+ *
+ * BASE_URL is a root-relative path ("/"), which is fine everywhere inside the
+ * page itself. It is NOT enough for resources loaded into a separate document
+ * such as CKEditor's editing iframe: that iframe gets its own <base href>, so a
+ * "/chip-admin/..." path cannot be resolved there and the file silently fails
+ * to load. Use this helper for anything handed to an editor or an external
+ * consumer (contentsCss, baseHref, feeds, e-mail, canonical tags).
+ */
+function absolute_url($path = '') {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443)
+        || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+    return ($isHttps ? 'https' : 'http') . '://' . $host . url($path);
+}
+
+/**
  * Safe HTML escaping
  */
 function e($string) {

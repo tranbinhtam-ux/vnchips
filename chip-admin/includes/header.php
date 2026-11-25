@@ -64,7 +64,7 @@ if (!isset($adminBreadcrumb)) {
   <script>
     if (typeof CKEDITOR !== 'undefined') {
       CKEDITOR.config.versionCheck = false;
-      CKEDITOR.config.baseHref = '<?= url() ?>/';
+      CKEDITOR.config.baseHref = '<?= absolute_url() ?>';
     }
   </script>
 </head>

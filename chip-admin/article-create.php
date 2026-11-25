@@ -365,13 +365,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize CKEditor
   if (typeof CKEDITOR !== 'undefined') {
     CKEDITOR.config.versionCheck = false;
-    CKEDITOR.config.baseHref = '<?= url() ?>/';
+    CKEDITOR.config.baseHref = '<?= absolute_url() ?>';
     ckInstance = CKEDITOR.replace('ckeditor-instance', {
       height: 480,
       removeButtons: 'Save,NewPage,ExportPdf,Preview,Print',
       extraPlugins: 'uploadimage,justify',
-      baseHref: '<?= url() ?>/',
-      contentsCss: ['https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', '<?= admin_url('assets/css/editor-content.css') ?>?v=<?= @filemtime(__DIR__ . '/assets/css/editor-content.css') ?>'],
+      baseHref: '<?= absolute_url() ?>',
+      contentsCss: ['https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', '<?= absolute_url(ADMIN_DIR . '/assets/css/editor-content.css') ?>?v=<?= @filemtime(__DIR__ . '/assets/css/editor-content.css') ?>'],
     });
 
     ckInstance.on('change', function() {
