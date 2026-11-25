@@ -1914,6 +1914,83 @@ body.admin-edit-active .live-edit-badge {
   </div>
 </div>
 
+<!-- 9.05. Modal Quick Edit: Design Service & IP Service accordion (index.php + business.php) -->
+<div class="vnchip-live-modal" id="modalLiveEditServices">
+  <div class="vnchip-modal-backdrop" onclick="closeLiveModal('modalLiveEditServices')"></div>
+  <div class="vnchip-modal-dialog" style="max-width: 760px;">
+
+    <div class="vnchip-modal-header">
+      <h5 class="vnchip-modal-title">
+        <i class="fa-solid fa-sitemap" style="color: #F25B22;"></i> Chỉnh sửa Khối Design Service &amp; IP Service
+      </h5>
+      <button type="button" class="vnchip-modal-close" onclick="closeLiveModal('modalLiveEditServices')">&times;</button>
+    </div>
+
+    <div class="vnchip-modal-body">
+      <form id="formLiveEditServices">
+
+        <div style="background: #FFFBEB; border: 1px solid #FCD34D; border-radius: 10px; padding: 14px; margin-bottom: 14px;">
+          <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0;">
+            <input type="checkbox" id="inputLiveShowServices" <?= Setting::get('show_design_ip_services', '1') === '1' ? 'checked' : '' ?> style="width: 18px; height: 18px; accent-color: #D97706; flex: none;">
+            <span>
+              <span style="display: block; font-weight: 700; color: #92400E; font-size: 0.88rem;">
+                <i class="fa-solid fa-eye me-1"></i> Hiển thị khối Design Service &amp; IP Service
+              </span>
+              <span style="display: block; font-size: 0.78rem; color: #78716C; margin-top: 2px;">
+                Áp dụng cho cả Trang chủ và trang Business Solutions. Bỏ chọn để ẩn với khách truy cập; bạn vẫn thấy khối mờ kèm nhãn ĐANG TẮT.
+              </span>
+            </span>
+          </label>
+        </div>
+
+        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px; margin-bottom: 14px;">
+          <div style="font-weight: 700; color: #F25B22; font-size: 0.85rem; margin-bottom: 10px;">
+            <i class="fa-solid fa-heading me-1"></i> Tiêu đề hai cột
+          </div>
+          <div class="vnchip-form-group">
+            <label class="vnchip-form-label">Cột trái:</label>
+            <input type="text" id="inputLiveServicesDesignTitle" name="services_design_title" class="vnchip-form-input" value="<?= e(Setting::get('services_design_title', 'DESIGN SERVICE')) ?>">
+          </div>
+          <div class="vnchip-form-group" style="margin-bottom: 0;">
+            <label class="vnchip-form-label">Cột phải:</label>
+            <input type="text" id="inputLiveServicesIpTitle" name="services_ip_title" class="vnchip-form-input" value="<?= e(Setting::get('services_ip_title', 'IP SERVICE')) ?>">
+          </div>
+        </div>
+
+        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 16px; text-align: center;">
+          <div style="font-size: 1.6rem; color: #F25B22; margin-bottom: 8px;">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div style="font-weight: 700; font-size: 0.95rem; color: #0F172A; margin-bottom: 6px;">
+            Nội dung từng mục &amp; Từ điển Tooltip
+          </div>
+          <div style="font-size: 0.82rem; color: #64748B; max-width: 560px; margin: 0 auto 16px;">
+            Tên mục, ảnh minh hoạ và nội dung của từng mục accordion được quản lý trong trang Admin riêng.
+            Các từ khoá cam gạch chân (rê chuột hiện giải thích) lấy từ Từ điển Tooltip &mdash; trong nội dung chỉ cần viết <code>[[từ khoá]]</code>.
+          </div>
+          <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <a href="<?= admin_url('services.php') ?>" target="_blank" rel="noopener noreferrer" class="vnchip-btn vnchip-btn-primary" style="font-size: 0.82rem; background: linear-gradient(135deg, #F25B22 0%, #C2410C 100%);">
+              <i class="fa-solid fa-sitemap me-1"></i> Quản lý mục Design &amp; IP Services
+            </a>
+            <a href="<?= admin_url('tooltips.php') ?>" target="_blank" rel="noopener noreferrer" class="vnchip-btn vnchip-btn-secondary" style="font-size: 0.82rem;">
+              <i class="fa-solid fa-comment-dots me-1"></i> Từ điển Tooltip
+            </a>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="vnchip-modal-footer">
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" onclick="closeLiveModal('modalLiveEditServices')">Hủy bỏ</button>
+      <button type="button" class="vnchip-btn vnchip-btn-primary" id="btnSaveLiveServices" style="background: linear-gradient(135deg, #F25B22 0%, #C2410C 100%);">
+        <i class="fa-solid fa-floppy-disk"></i> Lưu Thay Đổi
+      </button>
+    </div>
+
+  </div>
+</div>
+
 <!-- 9.1. Modal Quick Edit: Technology Sections (technology.php) -->
 <div class="vnchip-live-modal" id="modalLiveEditTechnology">
   <div class="vnchip-modal-backdrop" onclick="closeLiveModal('modalLiveEditTechnology')"></div>
@@ -3350,18 +3427,18 @@ function removeLiveConductCardRow(idx) {
       bizTech.appendChild(badge);
     }
 
-    const bizServices = document.querySelector('#design-service, .services-grid');
+    const bizServices = document.querySelector('#live-services-wrap, #design-service, .services-grid');
     if (bizServices && !bizServices.querySelector('.badge-edit-biz-serv')) {
       bizServices.classList.add('live-editable-wrap');
       const badge = document.createElement('button');
       badge.type = 'button';
       badge.className = 'live-edit-badge badge-edit-biz-serv';
       badge.innerHTML = '<i class="fa-solid fa-layer-group"></i> Sửa Dịch Vụ Thiết Kế & IP';
-      badge.title = 'Chỉnh sửa Mô hình hợp tác & Dịch vụ Thiết Kế';
+      badge.title = 'Tiêu đề 2 cột, bật/tắt khối, nội dung từng mục và từ điển tooltip';
       badge.onclick = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        openLiveModal('modalLiveEditBusiness', 'biz-tab-services');
+        openLiveModal('modalLiveEditServices');
       };
       bizServices.appendChild(badge);
     }
@@ -4064,6 +4141,75 @@ function removeLiveConductCardRow(idx) {
         .catch(err => {
           btn.disabled = false;
           btn.innerHTML = '<i class="fa-solid fa-floppy-disk me-1"></i> Lưu Thay Đổi Business';
+          alert('Lỗi kết nối máy chủ: ' + err);
+        });
+      });
+    }
+
+    // 7.1 Save Design Service & IP Service block (headings + on/off switch)
+    const btnSaveServices = document.getElementById('btnSaveLiveServices');
+    if (btnSaveServices && !btnSaveServices._hasBoundEvents) {
+      btnSaveServices._hasBoundEvents = true;
+      btnSaveServices.addEventListener('click', function() {
+        const btn = this;
+        const label = '<i class="fa-solid fa-floppy-disk me-1"></i> Lưu Thay Đổi';
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Đang lưu...';
+
+        const form = document.getElementById('formLiveEditServices');
+        if (!form) return;
+        const formData = new FormData(form);
+        const dataObj = {};
+        formData.forEach((val, key) => { dataObj[key] = val; });
+
+        const showCb = document.getElementById('inputLiveShowServices');
+        if (showCb) {
+          dataObj.show_design_ip_services = showCb.checked ? '1' : '0';
+        }
+
+        const postData = new FormData();
+        postData.append('action', 'save_batch');
+        postData.append('data', JSON.stringify(dataObj));
+
+        fetch('<?= admin_url("ajax/live-edit.php") ?>', { method: 'POST', body: postData })
+        .then(res => res.json())
+        .then(res => {
+          btn.disabled = false;
+          btn.innerHTML = label;
+          if (!res.success) {
+            alert(res.error || 'Lỗi khi lưu khối Design & IP Services.');
+            return;
+          }
+
+          const colTitles = document.querySelectorAll('.services-grid .service-col-title');
+          if (colTitles[0] && dataObj.services_design_title) colTitles[0].innerText = dataObj.services_design_title;
+          if (colTitles[1] && dataObj.services_ip_title) colTitles[1].innerText = dataObj.services_ip_title;
+
+          // Reflect the on/off switch without a page reload
+          const wrap = document.getElementById('live-services-wrap');
+          if (wrap && typeof dataObj.show_design_ip_services !== 'undefined') {
+            const on = dataObj.show_design_ip_services === '1';
+            wrap.classList.toggle('live-section-off', !on);
+            wrap.setAttribute('data-section-hidden', on ? '0' : '1');
+
+            let offFlag = document.getElementById('live-services-off-flag');
+            if (!on && !offFlag) {
+              offFlag = document.createElement('div');
+              offFlag.id = 'live-services-off-flag';
+              offFlag.className = 'live-section-off-flag';
+              offFlag.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Khối Design Service &amp; IP Service đang <strong>TẮT</strong> &mdash; khách truy cập không nhìn thấy. Bạn thấy được vì đang đăng nhập quản trị.';
+              wrap.insertBefore(offFlag, wrap.firstChild);
+            } else if (on && offFlag) {
+              offFlag.remove();
+            }
+          }
+
+          closeLiveModal('modalLiveEditServices');
+          showToast('✓ Đã cập nhật khối Design & IP Services!');
+        })
+        .catch(err => {
+          btn.disabled = false;
+          btn.innerHTML = label;
           alert('Lỗi kết nối máy chủ: ' + err);
         });
       });

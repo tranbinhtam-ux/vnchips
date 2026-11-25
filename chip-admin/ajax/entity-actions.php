@@ -8,6 +8,8 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../../models/Member.php';
 require_once __DIR__ . '/../../models/Partner.php';
+require_once __DIR__ . '/../../models/ServiceItem.php';
+require_once __DIR__ . '/../../models/ServiceTooltip.php';
 
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 $db = Database::getInstance()->getConnection();
@@ -100,6 +102,51 @@ if ($action === 'update_inquiry_status') {
         $stmt = $db->prepare("UPDATE `inquiries` SET `status` = :st WHERE `id` = :id");
         $success = $stmt->execute([':st' => $status, ':id' => $id]);
         echo json_encode(['success' => (bool)$success, 'status' => $status, 'message' => 'Status updated to ' . $status]);
+        exit;
+    }
+}
+
+/* ---------------------------------------------- Design Service / IP Service items */
+
+if ($action === 'reorder_service_items') {
+    $order = $_POST['order'] ?? [];
+    if (!is_array($order) && is_string($order)) {
+        $order = json_decode($order, true);
+    }
+    $group = $_POST['group'] ?? '';
+    if (is_array($order)) {
+        $success = isset(ServiceItem::GROUPS[$group])
+            ? ServiceItem::updateOrderInGroup($order, $group)
+            : ServiceItem::updateOrder($order);
+        echo json_encode(['success' => (bool)$success]);
+        exit;
+    }
+}
+
+if ($action === 'toggle_service_item') {
+    $id = (int)($_POST['id'] ?? 0);
+    if ($id > 0) {
+        $success = ServiceItem::toggleActive($id);
+        $item = ServiceItem::getById($id);
+        echo json_encode([
+            'success'   => (bool)$success,
+            'is_active' => (int)($item['is_active'] ?? 0),
+            'message'   => 'Service item visibility updated'
+        ]);
+        exit;
+    }
+}
+
+if ($action === 'toggle_service_tooltip') {
+    $id = (int)($_POST['id'] ?? 0);
+    if ($id > 0) {
+        $success = ServiceTooltip::toggleActive($id);
+        $tip = ServiceTooltip::getById($id);
+        echo json_encode([
+            'success'   => (bool)$success,
+            'is_active' => (int)($tip['is_active'] ?? 0),
+            'message'   => 'Tooltip visibility updated'
+        ]);
         exit;
     }
 }

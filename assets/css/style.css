@@ -1308,6 +1308,41 @@ select {
   margin-bottom: 0;
 }
 
+/* Bodies written in the admin CKEditor arrive as plain <p>/<ul>/<h3>, so give every
+   direct child of .service-body the same reading rhythm as .spec-paragraph. */
+.service-body p,
+.service-body li {
+  color: #475569;
+  line-height: 1.75;
+  font-size: 0.95rem;
+}
+
+.service-body p {
+  margin-bottom: 14px;
+}
+
+.service-body ul,
+.service-body ol {
+  margin: 0 0 14px;
+  padding-left: 22px;
+}
+
+.service-body li {
+  margin-bottom: 6px;
+}
+
+.service-body h3,
+.service-body h4 {
+  margin: 20px 0 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.service-body > *:last-child {
+  margin-bottom: 0;
+}
+
 /* ==========================================================================
    INTERACTIVE KEYWORDS & TOOLTIPS (Ported from vnchips_old)
    ========================================================================== */
