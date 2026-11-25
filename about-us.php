@@ -7,6 +7,7 @@
 
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/models/Member.php';
+require_once __DIR__ . '/models/Admin.php';
 
 // Helper: safely render multiline card titles (supports both newline and <br>)
 $formatMultilineTitle = static function ($text) {
@@ -91,6 +92,11 @@ $customVisionCardsHtml = trim((string)Setting::get('section_about_vision_cards',
 $executives   = Member::getActive('leadership');
 $keyTeam      = Member::getActive('key_team');
 $showKeyTeam  = Setting::get('about_show_key_team', '1') === '1';
+
+// A hidden section is still rendered for signed-in admins (greyed out, flagged), otherwise
+// switching it off would also remove the Live Edit badge needed to switch it back on.
+$keyTeamAdminPreview = Admin::check();
+$renderKeyTeam       = $showKeyTeam || $keyTeamAdminPreview;
 
 $leadershipTitle   = Setting::getOr('about_leadership_title', 'LEADERSHIP');
 $founderPhoto      = Setting::getOr('about_founder_photo', 'assets/images/founder_tri_standing.webp');
@@ -300,11 +306,17 @@ require_once __DIR__ . '/includes/header.php';
       <?php endforeach; ?>
     </div>
 
-    <?php if ($showKeyTeam): ?>
+    <?php if ($renderKeyTeam): ?>
     <div class="journey-divider" style="margin-top: 60px; margin-bottom: 50px;"></div>
 
     <!-- Key Team Carousel -->
-    <div id="live-key-team-wrap">
+    <div id="live-key-team-wrap" class="<?= $showKeyTeam ? '' : 'live-section-off' ?>" data-section-hidden="<?= $showKeyTeam ? '0' : '1' ?>">
+      <?php if (!$showKeyTeam): ?>
+        <div class="live-section-off-flag" id="live-key-team-off-flag">
+          <i class="fa-solid fa-eye-slash"></i>
+          Khối Key Team đang <strong>TẮT</strong> &mdash; khách truy cập không nhìn thấy. Bạn thấy được vì đang đăng nhập quản trị.
+        </div>
+      <?php endif; ?>
       <div class="key-team-header-row" id="key-team">
         <div>
           <h2 class="section-title-tech key-team-title" id="live-key-team-title"><?= e($keyTeamTitle) ?></h2>

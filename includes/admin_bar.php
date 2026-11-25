@@ -449,6 +449,35 @@ body.admin-edit-active section.sus-hero-section.live-editable-wrap:hover {
   box-shadow: inset 0 0 22px rgba(255, 184, 0, 0.65) !important;
 }
 
+/* Sections switched OFF: hidden from visitors, still shown to the signed-in admin
+   (greyed out) so the Live Edit badge that switches them back on stays reachable. */
+.live-section-off {
+  position: relative;
+  opacity: 0.45;
+  filter: grayscale(0.85);
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+.live-section-off:hover {
+  opacity: 0.8;
+  filter: grayscale(0.3);
+}
+.live-section-off-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 7px 15px;
+  border-radius: 999px;
+  background: rgba(239, 68, 68, 0.16);
+  border: 1px dashed rgba(248, 113, 113, 0.9);
+  color: #FCA5A5;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  filter: grayscale(0);
+}
+.live-section-off-flag strong { color: #FECACA; }
+
 /* Floating Live Edit Trigger Badges */
 .live-edit-badge {
   display: none;
@@ -772,13 +801,15 @@ body.admin-edit-active .live-edit-badge {
 }
 
 /* Modal Tab Navigation */
+/* Tabs wrap onto a second row instead of scrolling sideways: a tab parked off-screen
+   behind a scrollbar is a tab nobody finds. */
 .vnchip-modal-tabs {
   display: flex;
+  flex-wrap: wrap;
   background: #F1F5F9;
   border-bottom: 1px solid #CBD5E1;
   padding: 0 16px;
-  gap: 4px;
-  overflow-x: auto;
+  gap: 4px 2px;
 }
 
 .vnchip-tab-link {
@@ -1442,7 +1473,10 @@ body.admin-edit-active .live-edit-badge {
         <i class="fa-solid fa-code"></i> Mã HTML Leadership
       </button>
       <button type="button" class="vnchip-tab-link" data-tab="lead-tab-members" onclick="switchModalTab('modalLiveEditLeadership', 'lead-tab-members')">
-        <i class="fa-solid fa-users"></i> Ban Lãnh đạo & Key Team
+        <i class="fa-solid fa-users"></i> Ban Lãnh đạo
+      </button>
+      <button type="button" class="vnchip-tab-link" data-tab="lead-tab-keyteam" onclick="switchModalTab('modalLiveEditLeadership', 'lead-tab-keyteam')">
+        <i class="fa-solid fa-people-group"></i> Khối Key Team
       </button>
     </div>
 
@@ -1512,24 +1546,10 @@ body.admin-edit-active .live-edit-badge {
             </div>
           </div>
 
-          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 10px; flex-wrap: wrap;">
-              <div style="font-weight: 700; color: #F59E0B; font-size: 0.85rem;">
-                <i class="fa-solid fa-people-group me-1"></i> Khối KEY TEAM
-              </div>
-              <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; color: #334155; cursor: pointer; margin: 0;">
-                <input type="checkbox" id="inputLiveShowKeyTeam" <?= Setting::get('about_show_key_team', '1') === '1' ? 'checked' : '' ?> style="width: 16px; height: 16px; accent-color: #0D9488;">
-                <span>Hiển thị khối Key Team trên trang</span>
-              </label>
-            </div>
-            <div class="vnchip-form-group">
-              <label class="vnchip-form-label">Tiêu đề khối Key Team:</label>
-              <input type="text" id="inputLiveKeyTeamTitle" name="about_key_team_title" class="vnchip-form-input" value="<?= e(Setting::get('about_key_team_title', 'KEY TEAM')) ?>">
-            </div>
-            <div class="vnchip-form-group">
-              <label class="vnchip-form-label">Đoạn mô tả ngắn Key Team:</label>
-              <textarea id="inputLiveKeyTeamSubtext" name="about_key_team_subtext" rows="2" class="vnchip-form-textarea"><?= e(Setting::get('about_key_team_subtext', 'Our multidisciplinary team of senior IC design engineers, verification leads, and physical implementation specialists.')) ?></textarea>
-            </div>
+          <div style="font-size: 0.8rem; color: #64748B; background: #FFFBEB; border: 1px dashed #FCD34D; border-radius: 8px; padding: 10px 12px;">
+            <i class="fa-solid fa-circle-info me-1" style="color: #D97706;"></i>
+            Tiêu đề, mô tả và bật/tắt hiển thị của khối <strong>KEY TEAM</strong> nằm ở tab
+            <a href="#" onclick="switchModalTab('modalLiveEditLeadership', 'lead-tab-keyteam'); return false;" style="color: #B45309; font-weight: 700;">Khối Key Team</a>.
           </div>
         </div>
 
@@ -1584,6 +1604,39 @@ body.admin-edit-active .live-edit-badge {
             <a href="<?= admin_url('members.php') ?>" target="_blank" rel="noopener noreferrer" class="vnchip-btn vnchip-btn-secondary" style="font-size: 0.8rem;">
               <i class="fa-solid fa-users-viewfinder me-1"></i> Mở Trang Quản Lý Toàn Bộ Đội Ngũ
             </a>
+          </div>
+
+        </div>
+
+        <!-- Tab 5: Key Team block (visibility + headings + members) -->
+        <div class="vnchip-tab-pane" id="lead-tab-keyteam">
+
+          <div style="background: #FFFBEB; border: 1px solid #FCD34D; border-radius: 10px; padding: 14px; margin-bottom: 14px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0;">
+              <input type="checkbox" id="inputLiveShowKeyTeam" <?= Setting::get('about_show_key_team', '1') === '1' ? 'checked' : '' ?> style="width: 18px; height: 18px; accent-color: #D97706; flex: none;">
+              <span>
+                <span style="display: block; font-weight: 700; color: #92400E; font-size: 0.88rem;">
+                  <i class="fa-solid fa-eye me-1"></i> Hiển thị khối Key Team trên trang About Us
+                </span>
+                <span style="display: block; font-size: 0.78rem; color: #78716C; margin-top: 2px;">
+                  Bỏ chọn để ẩn toàn bộ khối với khách truy cập. Bạn vẫn thấy khối này (mờ đi, có nhãn ĐANG TẮT) để bật lại bất cứ lúc nào.
+                </span>
+              </span>
+            </label>
+          </div>
+
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px; margin-bottom: 16px;">
+            <div style="font-weight: 700; color: #D97706; font-size: 0.85rem; margin-bottom: 10px;">
+              <i class="fa-solid fa-heading me-1"></i> Tiêu đề & Mô tả khối
+            </div>
+            <div class="vnchip-form-group">
+              <label class="vnchip-form-label">Tiêu đề khối Key Team:</label>
+              <input type="text" id="inputLiveKeyTeamTitle" name="about_key_team_title" class="vnchip-form-input" value="<?= e(Setting::get('about_key_team_title', 'KEY TEAM')) ?>">
+            </div>
+            <div class="vnchip-form-group" style="margin-bottom: 0;">
+              <label class="vnchip-form-label">Đoạn mô tả ngắn Key Team:</label>
+              <textarea id="inputLiveKeyTeamSubtext" name="about_key_team_subtext" rows="2" class="vnchip-form-textarea"><?= e(Setting::get('about_key_team_subtext', 'Our multidisciplinary team of senior IC design engineers, verification leads, and physical implementation specialists.')) ?></textarea>
+            </div>
           </div>
 
           <div id="lead-keyteam-members-anchor" style="font-weight: 700; color: #D97706; font-size: 0.86rem; margin-bottom: 10px;">
@@ -3427,11 +3480,7 @@ function removeLiveConductCardRow(idx) {
       badge.onclick = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        openLiveModal('modalLiveEditLeadership', 'lead-tab-members');
-        setTimeout(() => {
-          const anchor = document.getElementById('lead-keyteam-members-anchor');
-          if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 80);
+        openLiveModal('modalLiveEditLeadership', 'lead-tab-keyteam');
       };
       keyTeamWrap.appendChild(badge);
     }
@@ -3861,6 +3910,25 @@ function removeLiveConductCardRow(idx) {
 
             const keyTeamSub = document.getElementById('live-key-team-sub');
             if (keyTeamSub && dataObj.about_key_team_subtext) keyTeamSub.innerText = dataObj.about_key_team_subtext;
+
+            // Reflect the Key Team on/off switch without a page reload
+            const keyTeamWrapEl = document.getElementById('live-key-team-wrap');
+            if (keyTeamWrapEl && typeof dataObj.about_show_key_team !== 'undefined') {
+              const keyTeamOn = dataObj.about_show_key_team === '1';
+              keyTeamWrapEl.classList.toggle('live-section-off', !keyTeamOn);
+              keyTeamWrapEl.setAttribute('data-section-hidden', keyTeamOn ? '0' : '1');
+
+              let offFlag = document.getElementById('live-key-team-off-flag');
+              if (!keyTeamOn && !offFlag) {
+                offFlag = document.createElement('div');
+                offFlag.id = 'live-key-team-off-flag';
+                offFlag.className = 'live-section-off-flag';
+                offFlag.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Khối Key Team đang <strong>TẮT</strong> &mdash; khách truy cập không nhìn thấy. Bạn thấy được vì đang đăng nhập quản trị.';
+                keyTeamWrapEl.insertBefore(offFlag, keyTeamWrapEl.firstChild);
+              } else if (keyTeamOn && offFlag) {
+                offFlag.remove();
+              }
+            }
 
             const founderImg = document.getElementById('live-founder-img');
             if (founderImg && dataObj.about_founder_photo) {
