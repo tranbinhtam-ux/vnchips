@@ -65,7 +65,7 @@ $adminActivePage = 'partners';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<form action="<?= admin_url('partner-edit.php' . ($id ? '?id=' . $id : '')) ?>" method="POST" enctype="multipart/form-data">
+<form action="<?= admin_url('partner-edit.php' . ($id ? '?id=' . $id : '')) ?>" method="POST" enctype="multipart/form-data" id="partner-form">
   <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
       <div class="text-muted small mb-1">
@@ -143,11 +143,41 @@ require_once __DIR__ . '/includes/header.php';
                  value="<?= e($partner['content_heading']) ?>" placeholder="Defaults to Title if left blank">
         </div>
 
-        <div>
-          <label class="form-label small fw-semibold text-muted">Full Case Study Narrative / Body Content</label>
-          <textarea name="content_body" rows="10" class="form-control" 
-                    placeholder="Full case study text, challenges solved, silicon tapeout metrics, and quotes..."><?= e($partner['content_body']) ?></textarea>
+      </div>
+
+      <!-- Dual Mode Content Editor -->
+      <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius: 14px;">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <label class="form-label fw-bold text-dark mb-0">
+            <i class="fa-solid fa-file-code text-primary me-2"></i>Full Case Study Narrative / Body Content
+          </label>
+          <div class="btn-group btn-group-sm" role="group">
+            <button type="button" class="btn btn-primary" id="btn-mode-visual">
+              <i class="fa-solid fa-eye me-1"></i> Visual (CKEditor)
+            </button>
+            <button type="button" class="btn btn-outline-secondary" id="btn-mode-code">
+              <i class="fa-solid fa-code me-1"></i> HTML Code (Ace)
+            </button>
+          </div>
         </div>
+
+        <!-- Hidden master textarea that will be submitted with form -->
+        <textarea name="content_body" id="master-content" style="display: none;"><?= e($partner['content_body']) ?></textarea>
+
+        <!-- Container for CKEditor Visual -->
+        <div id="editor-visual-container">
+          <textarea id="ckeditor-instance"><?= e($partner['content_body']) ?></textarea>
+        </div>
+
+        <!-- Container for Ace HTML Editor -->
+        <div id="editor-code-container" style="display: none;">
+          <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-dark text-white-50 rounded-top small">
+            <span><i class="fa-brands fa-html5 text-warning me-1"></i> HTML Editor Mode (Ace Editor)</span>
+            <span>Syntax: HTML &bull; Theme: Monokai</span>
+          </div>
+          <div id="ace-editor" style="width: 100%; height: 500px; border-radius: 0 0 8px 8px; font-size: 14px;"></div>
+        </div>
+
       </div>
 
       <!-- Detail Hero Image Card -->
@@ -291,6 +321,102 @@ document.addEventListener('DOMContentLoaded', function() {
 
   setupPreview('card-img-file', 'card-img-preview');
   setupPreview('content-img-file', 'content-img-preview');
+
+  // Dual Mode Editor (CKEditor Visual + Ace HTML) for Case Study Body
+  const masterContent = document.getElementById('master-content');
+  const visualContainer = document.getElementById('editor-visual-container');
+  const codeContainer = document.getElementById('editor-code-container');
+  const btnModeVisual = document.getElementById('btn-mode-visual');
+  const btnModeCode = document.getElementById('btn-mode-code');
+
+  let currentMode = 'visual'; // 'visual' | 'code'
+  let ckInstance = null;
+  let aceInstance = null;
+
+  // Initialize CKEditor
+  if (typeof CKEDITOR !== 'undefined') {
+    CKEDITOR.config.versionCheck = false;
+    CKEDITOR.config.baseHref = '<?= url() ?>/';
+    ckInstance = CKEDITOR.replace('ckeditor-instance', {
+      height: 480,
+      removeButtons: 'Save,NewPage,ExportPdf,Preview,Print',
+      extraPlugins: 'uploadimage,justify',
+      baseHref: '<?= url() ?>/',
+      contentsCss: ['https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'],
+    });
+
+    ckInstance.on('change', function() {
+      masterContent.value = ckInstance.getData();
+    });
+  }
+
+  // Initialize Ace Editor
+  if (typeof ace !== 'undefined') {
+    aceInstance = ace.edit("ace-editor");
+    aceInstance.setTheme("ace/theme/monokai");
+    aceInstance.session.setMode("ace/mode/html");
+    aceInstance.setValue(masterContent.value, -1);
+    aceInstance.setOptions({
+      fontSize: "14px",
+      wrap: true,
+      showPrintMargin: false
+    });
+
+    aceInstance.session.on('change', function() {
+      masterContent.value = aceInstance.getValue();
+    });
+  }
+
+  // Mode Switchers
+  if (btnModeVisual && btnModeCode) {
+    btnModeVisual.addEventListener('click', function() {
+      if (currentMode === 'visual') return;
+      currentMode = 'visual';
+
+      // Sync Ace to Visual
+      if (aceInstance && ckInstance) {
+        const codeData = aceInstance.getValue();
+        ckInstance.setData(codeData);
+        masterContent.value = codeData;
+      }
+
+      codeContainer.style.display = 'none';
+      visualContainer.style.display = 'block';
+
+      btnModeVisual.className = 'btn btn-primary';
+      btnModeCode.className = 'btn btn-outline-secondary';
+    });
+
+    btnModeCode.addEventListener('click', function() {
+      if (currentMode === 'code') return;
+      currentMode = 'code';
+
+      // Sync Visual to Ace
+      if (ckInstance && aceInstance) {
+        const visualData = ckInstance.getData();
+        aceInstance.setValue(visualData, -1);
+        masterContent.value = visualData;
+      }
+
+      visualContainer.style.display = 'none';
+      codeContainer.style.display = 'block';
+
+      btnModeCode.className = 'btn btn-primary';
+      btnModeVisual.className = 'btn btn-outline-secondary';
+    });
+  }
+
+  // Ensure masterContent is 100% updated on submit
+  const partnerForm = document.getElementById('partner-form');
+  if (partnerForm) {
+    partnerForm.addEventListener('submit', function() {
+      if (currentMode === 'visual' && ckInstance) {
+        masterContent.value = ckInstance.getData();
+      } else if (currentMode === 'code' && aceInstance) {
+        masterContent.value = aceInstance.getValue();
+      }
+    });
+  }
 });
 </script>
 

@@ -74,7 +74,12 @@ require_once __DIR__ . '/includes/header.php';
         <?php endif; ?>
 
         <h2 class="partner-detail-heading"><?= e($partner['content_heading']) ?></h2>
-        <p class="partner-detail-text"><?= nl2br(e($partner['content_body'])) ?></p>
+        <?php $partnerBody = (string)($partner['content_body'] ?? ''); ?>
+        <?php if ($partnerBody !== strip_tags($partnerBody)): /* Rich HTML from CKEditor */ ?>
+          <div class="partner-detail-text partner-detail-rich"><?= $partnerBody ?></div>
+        <?php else: /* Legacy plain-text content */ ?>
+          <p class="partner-detail-text"><?= nl2br(e($partnerBody)) ?></p>
+        <?php endif; ?>
 
         <div class="partner-detail-footer">
           <a href="<?= url('partners.php') ?>" class="partner-detail-back">
@@ -163,6 +168,53 @@ require_once __DIR__ . '/includes/header.php';
     text-align: justify;
     margin: 0;
   }
+  .partner-detail-rich > *:first-child { margin-top: 0; }
+  .partner-detail-rich > *:last-child { margin-bottom: 0; }
+  .partner-detail-rich p { margin: 0 0 18px; }
+  .partner-detail-rich ul,
+  .partner-detail-rich ol { margin: 0 0 18px; padding-left: 24px; }
+  .partner-detail-rich li { margin-bottom: 8px; }
+  .partner-detail-rich h2,
+  .partner-detail-rich h3,
+  .partner-detail-rich h4 {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    color: #1E293B;
+    line-height: 1.4;
+    text-align: left;
+    margin: 32px 0 14px;
+  }
+  .partner-detail-rich h2 { font-size: 1.45rem; }
+  .partner-detail-rich h3 { font-size: 1.25rem; }
+  .partner-detail-rich h4 { font-size: 1.1rem; }
+  .partner-detail-rich a { color: #E67E22; text-decoration: underline; }
+  .partner-detail-rich img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 12px 0;
+  }
+  .partner-detail-rich blockquote {
+    margin: 24px 0;
+    padding: 14px 22px;
+    border-left: 4px solid #E67E22;
+    background: #F8FAFC;
+    color: #334155;
+    font-style: italic;
+  }
+  .partner-detail-rich table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 18px;
+    font-size: 1rem;
+  }
+  .partner-detail-rich table td,
+  .partner-detail-rich table th {
+    border: 1px solid #E2E8F0;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .partner-detail-rich table th { background: #F1F5F9; font-weight: 700; color: #1E293B; }
   .partner-detail-footer {
     margin-top: 44px;
     padding-top: 28px;
