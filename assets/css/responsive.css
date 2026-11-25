@@ -1,0 +1,473 @@
+/* ==========================================================================
+   VNCHIP TECHNOLOGY JSC - RESPONSIVE STYLESHEET
+   Mobile, Tablet, and Desktop Breakpoints
+   ========================================================================== */
+
+/* Large Desktops / Laptops (<= 1200px) */
+@media (max-width: 1200px) {
+  .media-card {
+    flex: 0 0 calc((100% - 48px) / 3);
+  }
+  
+  .footer-nav-grid {
+    grid-template-columns: 1fr 1.5fr 1fr;
+    gap: 40px;
+  }
+}
+
+/* Tablets & Mobile (<= 992px) */
+@media (max-width: 992px) {
+
+  .hero-section {
+    min-height: auto;
+    background-position: center 28%;
+    padding-top: max(240px, 45vw);
+    padding-bottom: 35px;
+  }
+
+  .stats-bar {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px 0;
+  }
+
+  .business-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .business-card {
+    height: 340px;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .partner-card {
+    flex: 0 0 calc((100% - 30px) / 2);
+    min-width: 280px;
+  }
+
+  .media-card {
+    flex: 0 0 calc((100% - 30px) / 2);
+    min-width: 260px;
+  }
+
+  .sustainable-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .cta-section-new {
+    padding: 20px 0 60px;
+    margin: 0;
+  }
+
+  .cta-box-new {
+    padding: 60px 25px;
+    margin-top: 0;
+    border-radius: 18px;
+  }
+
+  .cta-box-new h2 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .btn-cta-large {
+    padding: 13px 30px;
+    font-size: 1rem;
+    gap: 10px;
+  }
+
+  .cta-banner-pill {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+    border-radius: var(--radius-lg);
+    padding: 30px;
+  }
+
+  .footer-nav-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .footer-col {
+    padding: 24px 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .footer-col:first-child {
+    padding-top: 0;
+  }
+
+  .footer-col:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .footer-brand-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+}
+
+/* Small Screens / Mobile (<= 600px) */
+@media (max-width: 600px) {
+  .hero-section {
+    background-position: center 22%;
+    padding-top: max(200px, 48vw);
+    padding-bottom: 25px;
+  }
+
+  .section-title,
+  .section-title-tech,
+  .section-title-alt,
+  .partners-title,
+  .sustainable-main-title {
+    font-size: 2.2rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .pill-banner {
+    border-radius: var(--radius-md);
+    padding: 24px 20px;
+  }
+
+  .pill-banner p {
+    font-size: 0.98rem;
+  }
+
+  .cta-box-new {
+    padding: 40px 18px;
+  }
+
+  .cta-box-new h2 {
+    font-size: 1.25rem;
+    line-height: 1.35;
+  }
+
+  .btn-cta-large {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .partner-card {
+    flex: 0 0 88%;
+    min-width: 260px;
+  }
+
+  .media-card {
+    flex: 0 0 88%;
+    min-width: 250px;
+  }
+
+  .sustainable-cards-group {
+    flex-direction: column;
+  }
+
+  .footer-nav-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .footer-bottom-row {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  /* About Us Mobile Adjustments */
+  .about-hero-title {
+    font-size: 2.2rem;
+  }
+
+  .overview-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .vision-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .founder-message-box {
+    grid-template-columns: 1fr;
+  }
+
+  .founder-photo-col {
+    padding: 30px 20px 0;
+  }
+
+  .founder-quote-col {
+    padding: 30px 24px;
+  }
+
+  .executives-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .key-team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .conduct-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cleanroom-header-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .cleanroom-photos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Business Mobile Adjustments */
+  .biz-hero-title {
+    font-size: 2.2rem;
+  }
+
+  .biz-tech-box {
+    padding: 30px 20px;
+    border-radius: 24px;
+  }
+
+  .biz-tech-items {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .biz-rd-top-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .biz-rd-subphotos {
+    grid-template-columns: 1fr;
+  }
+
+  .biz-success-grid {
+    --success-per-view: 1;
+  }
+
+  .biz-values-quote {
+    font-size: 1.1rem;
+  }
+
+  .biz-uni-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  /* Timeline mobile: swipe horizontally */
+  .timeline-track {
+    grid-template-columns: repeat(7, 200px);
+  }
+}
+
+/* Medium Tablets (<= 992px) */
+@media (max-width: 992px) and (min-width: 601px) {
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vision-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .founder-message-box {
+    grid-template-columns: 1fr;
+  }
+
+  .executives-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .key-team-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .conduct-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cleanroom-header-row {
+    grid-template-columns: 1fr;
+  }
+
+  .cleanroom-photos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Business Tablet */
+  .biz-tech-items {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .biz-rd-top-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .biz-success-grid {
+    --success-per-view: 2;
+  }
+
+  .biz-uni-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Sustainable Tablet */
+  .sus-program-grid {
+    gap: 24px;
+  }
+
+  .sus-cleanroom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sus-steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sus-modules-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sustainable Mobile */
+@media (max-width: 600px) {
+  .sus-steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sus-detail-hero {
+    padding: 140px 0 50px;
+  }
+
+  .sus-detail-hero-title {
+    font-size: 1.8rem;
+  }
+
+  .sus-detail-section {
+    padding: 50px 0 60px;
+  }
+
+  .sus-hero-title {
+    font-size: 2.2rem;
+  }
+
+  .sus-program-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .sus-cleanroom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Media Center Responsive */
+@media (max-width: 992px) {
+  .media-page-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .media-hero-title {
+    font-size: 2.2rem;
+  }
+
+  .media-page-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .media-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .media-filter-pills {
+    justify-content: center;
+  }
+
+  .media-search-form {
+    width: 100%;
+  }
+}
+
+/* Contact Page Responsive */
+@media (max-width: 992px) {
+  .contact-main-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-page-title {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+  }
+
+  .contact-card-box {
+    padding: 30px 20px;
+    border-radius: 20px;
+  }
+
+  .contact-form-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .contact-form-full {
+    grid-column: span 1;
+  }
+
+  .about-hero-title,
+  .biz-hero-title,
+  .sus-hero-title,
+  .media-hero-title,
+  .contact-page-title {
+    font-size: 2.4rem !important;
+  }
+
+  .about-hero-section,
+  .biz-hero-section,
+  .sus-hero-section,
+  .media-hero-section {
+    min-height: 320px !important;
+    height: 340px !important;
+    padding-top: 100px !important;
+    padding-bottom: 35px !important;
+  }
+
+  .media-hero-section.media-hero-section--compact {
+    min-height: 0 !important;
+    height: 200px !important;
+    padding: 0 !important;
+  }
+}
+
+
+/* Homepage section titles: vnchips_old used 2.5rem at <= 992px (tablet and mobile) */
+@media (max-width: 992px) {
+  .home-section-title {
+    font-size: 2.5rem;
+  }
+}

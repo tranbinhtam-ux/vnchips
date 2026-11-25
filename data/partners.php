@@ -1,0 +1,148 @@
+<?php
+/**
+ * Partner case studies (migrated from the old vnchiplabs.com /article/{slug} pages)
+ * Used by partners.php (listing) and partner-detail.php (detail page)
+ */
+
+return array (
+  0 => 
+  array (
+    'id' => 1,
+    'title' => 'Hierarchical APR on TSMC N3E — AXMM top-block',
+    'slug' => 'hierarchical-apr-on-tsmc-n3e-axmm-topblock',
+    'category_name' => 'Partners',
+    'image_url' => 'uploads/featured/featured_1778551077.webp',
+    'is_pinned' => 1,
+    'excerpt' => '4-partition hierarchical PnR for an edge AI inference processor. IOPin budgeting, cross-partition routing congestion resolution, ELVT leakage containment, EUV multi-patterning DRC/DFM compliance, and MCMM STA sign-off on schedule.',
+    'content_image' => 'uploads/posts/1778557019_HINH1_copy_10_4x.png',
+    'content_heading' => 'Hierarchical APR on TSMC N3E — AXMM top-block',
+    'content_body' => '4-partition hierarchical PnR for an edge AI inference processor. IOPin budgeting, cross-partition routing congestion resolution, ELVT leakage containment, EUV multi-patterning DRC/DFM compliance, and MCMM STA sign-off on schedule.',
+    'created_at' => '2026-04-13 12:23:57',
+  ),
+  1 => 
+  array (
+    'id' => 2,
+    'title' => 'RTL-to-GDSII full-chip — 150M instances',
+    'slug' => 'rtltogdsii-fullchip-150m-instances',
+    'category_name' => 'Partners',
+    'image_url' => 'uploads/featured/featured_1778550238.webp',
+    'is_pinned' => 1,
+    'excerpt' => 'Turnkey hierarchical PnR for an AI inference SoC across 26 partitions, 8 hardened IPs, 596 clock domains. MCMM/POCV STA sign-off, EM-IR closure, custom PG mesh routing, full-chip DRC/LVS/ERC/ANT sign-off.',
+    'content_image' => 'uploads/posts/1778569982_HINH1_copy_11_4x.png',
+    'content_heading' => 'RTL-to-GDSII full-chip — 150M instances',
+    'content_body' => 'Turnkey hierarchical PnR for an AI inference SoC across 26 partitions, 8 hardened IPs, 596 clock domains. MCMM/POCV STA sign-off, EM-IR closure, custom PG mesh routing, full-chip DRC/LVS/ERC/ANT sign-off.',
+    'created_at' => '2026-04-13 12:22:58',
+  ),
+  2 => 
+  array (
+    'id' => 3,
+    'title' => 'Largest-die RTL-to-GDSII — 17.5 x 28 mm',
+    'slug' => 'largestdie-rtltogdsii-175-x-28-mm',
+    'category_name' => 'Partners',
+    'image_url' => 'uploads/featured/featured_1778551109.webp',
+    'is_pinned' => 1,
+    'excerpt' => 'Turnkey full-chip PnR for an Automotive ADAS vision SoC. 13 partitions, 396 clock domains, 10LM5X2Y2ZUTRDL stack. AOCV MCMM STA sign-off, EM-IR closure, full DRC/LVS/ERC/ANT/ICOVL/TCD sign-off.',
+    'content_image' => 'uploads/posts/1778570389_HINH1_copy_12_4x.png',
+    'content_heading' => 'Largest-die RTL-to-GDSII — 17.5 x 28 mm',
+    'content_body' => 'Turnkey full-chip PnR for an Automotive ADAS vision SoC. 13 partitions, 396 clock domains, 10LM5X2Y2ZUTRDL stack. AOCV MCMM STA sign-off, EM-IR closure, full DRC/LVS/ERC/ANT/ICOVL/TCD sign-off.',
+    'created_at' => '2026-04-13 12:22:24',
+  ),
+  3 => 
+  array (
+    'id' => 4,
+    'title' => 'High-density full-chip — HRP_TOP, 629 hard macros',
+    'slug' => 'highdensity-fullchip-hrp_top-629-hard-macros',
+    'category_name' => 'Partners',
+    'image_url' => 'uploads/featured/featured_1778553729.webp',
+    'is_pinned' => 1,
+    'excerpt' => 'Full chiptop for an Automotive safety MCU on M1-M9 stack, 629 hard macros. AC timing and internal/interface STA sign-off at 1 GHz under narrow-channel routing congestion. Full DRC/LVS/ERC/PERC sign-off.',
+    'content_image' => 'uploads/posts/1778570477_HINH1_copy_13_4x.png',
+    'content_heading' => 'High-density full-chip — HRP_TOP, 629 hard macros',
+    'content_body' => 'Full chiptop for an Automotive safety MCU on M1-M9 stack, 629 hard macros. AC timing and internal/interface STA sign-off at 1 GHz under narrow-channel routing congestion. Full DRC/LVS/ERC/PERC sign-off.',
+    'created_at' => '2026-04-13 12:21:48',
+  ),
+  4 => 
+  array (
+    'id' => 5,
+    'title' => 'PCIe Gen4 / CCIX top-block — 2 GHz timing closure',
+    'slug' => 'pcie-gen4-ccix-topblock-2-ghz-timing-closure',
+    'category_name' => 'Partners',
+    'image_url' => 'uploads/featured/featured_1778556455.webp',
+    'is_pinned' => 0,
+    'excerpt' => 'CCIX cache-coherent interconnect for AI training accelerators. Multi-source CTS across 388+412 clock domains, AOCV STA sign-off on CCIX link, 4 SerDes PMA custom routes with NDR, and full DRC/DFM sign-off.',
+    'content_image' => 'uploads/posts/1778570573_HINH1_copy_15_4x.png',
+    'content_heading' => 'PCIe Gen4 / CCIX top-block — 2 GHz timing closure',
+    'content_body' => 'CCIX cache-coherent interconnect for AI training accelerators. Multi-source CTS across 388+412 clock domains, AOCV STA sign-off on CCIX link, 4 SerDes PMA custom routes with NDR, and full DRC/DFM sign-off.',
+    'created_at' => '2026-04-13 15:13:19',
+  ),
+  5 => 
+  array (
+    'id' => 6,
+    'title' => 'CXL.io / .cache / .mem interconnect block',
+    'slug' => 'cxlio-cache-mem-interconnect-block',
+    'category_name' => 'Partners',
+    'image_url' => 'uploads/featured/featured_1778558963.webp',
+    'is_pinned' => 0,
+    'excerpt' => 'CXL protocol stack enabling AI server memory coherency and pooling. 1,536 clock domains, IP-boundary STA sign-off, EM-IR closure, post-layout parasitic extraction for STA. Full DRC/LVS sign-off.',
+    'content_image' => 'uploads/posts/1778570625_HINH1_copy_16_4x.png',
+    'content_heading' => 'CXL.io / .cache / .mem interconnect block',
+    'content_body' => 'CXL protocol stack enabling AI server memory coherency and pooling. 1,536 clock domains, IP-boundary STA sign-off, EM-IR closure, post-layout parasitic extraction for STA. Full DRC/LVS sign-off.',
+    'created_at' => '2026-04-13 15:12:36',
+  ),
+  6 => 
+  array (
+    'id' => 7,
+    'title' => 'Butterfly memory array — MX00901',
+    'slug' => 'butterfly-memory-array-mx00901',
+    'category_name' => 'Partners',
+    'image_url' => 'uploads/featured/featured_1778560709.webp',
+    'is_pinned' => 0,
+    'excerpt' => 'Full-custom SRAM bitcell array for AI accelerator on-chip memory. Butterfly architecture with matching-aware placement, parasitic-optimized feed-through routing, and dual-rail VDDA/VDD. DRC/LVS/ERC sign-off.',
+    'content_image' => 'uploads/posts/1778570742_HINH1_copy_17_4x.png',
+    'content_heading' => 'Butterfly memory array — MX00901',
+    'content_body' => 'Full-custom SRAM bitcell array for AI accelerator on-chip memory. Butterfly architecture with matching-aware placement, parasitic-optimized feed-through routing, and dual-rail VDDA/VDD. DRC/LVS/ERC sign-off.',
+    'created_at' => '2026-04-13 15:10:53',
+  ),
+  7 => 
+  array (
+    'id' => 8,
+    'title' => 'IEEE-standard I/O pad — IO_IEEE',
+    'slug' => 'ieeestandard-io-pad-io_ieee',
+    'category_name' => 'Partners',
+    'image_url' => 'uploads/featured/featured_1778572239.webp',
+    'is_pinned' => 0,
+    'excerpt' => 'High-speed I/O pad for PCIe/SerDes interfaces. Full-custom layout with TX driver, ESD protection, RX input buffer, and power clamp. Symmetric critical-signal routing and full DRC/LVS/ICV sign-off.',
+    'content_image' => 'uploads/posts/1778572187_HINH1_copy_19_4x.png',
+    'content_heading' => 'IEEE-standard I/O pad — IO_IEEE',
+    'content_body' => 'High-speed I/O pad for PCIe/SerDes interfaces. Full-custom layout with TX driver, ESD protection, RX input buffer, and power clamp. Symmetric critical-signal routing and full DRC/LVS/ICV sign-off.',
+    'created_at' => '2026-04-13 15:10:07',
+  ),
+  8 => 
+  array (
+    'id' => 9,
+    'title' => 'Full-custom PLL — PLL_TOP',
+    'slug' => 'fullcustom-pll-pll_top',
+    'category_name' => 'Partners',
+    'image_url' => 'uploads/featured/featured_1778555063.webp',
+    'is_pinned' => 0,
+    'excerpt' => 'Analog PLL for Automotive and communications SoC clock generation. VCO, charge pump, loop filter capacitor/resistor, phase-frequency detector, output divider, and digital control. Matching-aware placement and VREG grid for VCO and output clocks.',
+    'content_image' => 'uploads/posts/1778571017_HINH1_copy_14_4x.png',
+    'content_heading' => 'Full-custom PLL — PLL_TOP',
+    'content_body' => 'Analog PLL for Automotive and communications SoC clock generation. VCO, charge pump, loop filter capacitor/resistor, phase-frequency detector, output divider, and digital control. Matching-aware placement and VREG grid for VCO and output clocks.',
+    'created_at' => '2026-04-13 15:09:12',
+  ),
+  9 => 
+  array (
+    'id' => 10,
+    'title' => 'LVDS interface with PLL — LVDS_PLL',
+    'slug' => 'lvds-interface-with-pll-lvds_pll',
+    'category_name' => 'Partners',
+    'image_url' => 'uploads/featured/featured_1778569877.webp',
+    'is_pinned' => 0,
+    'excerpt' => 'Low-voltage differential signaling with integrated PLL for Automotive camera serial link and display interface. Differential P/N matching placement, symmetric critical-path routing, and mismatch-corrected device pairs.',
+    'content_image' => 'uploads/posts/1778571094_HINH1_copy_18_4x.png',
+    'content_heading' => 'LVDS interface with PLL — LVDS_PLL',
+    'content_body' => 'Low-voltage differential signaling with integrated PLL for Automotive camera serial link and display interface. Differential P/N matching placement, symmetric critical-path routing, and mismatch-corrected device pairs.',
+    'created_at' => '2026-04-13 15:06:39',
+  ),
+);

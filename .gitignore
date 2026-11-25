@@ -1,0 +1,22 @@
+# Server-specific credentials (NEVER commit live DB credentials)
+config/config.local.php
+.env
+.env.*
+
+# Runtime sessions, logs & temporary files
+storage/
+*.log
+cookies.txt
+*.tar.gz
+*.zip
+
+# Runtime user-uploaded CMS media (kept on production server)
+uploads/*
+!uploads/.gitkeep
+
+# OS & Editor metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
