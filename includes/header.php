@@ -290,7 +290,14 @@ $renderMegaItems = function (array $items) {
   ?>
 </head>
 <body>
-  <?php require_once __DIR__ . '/admin_bar.php'; ?>
+  <?php
+  // The frontend Live Edit bar is itself a permission: an account without it gets
+  // the plain public page, exactly as a visitor would see it.
+  require_once __DIR__ . '/../models/Admin.php';
+  if (Admin::can('live_edit.use')) {
+      require_once __DIR__ . '/admin_bar.php';
+  }
+  ?>
 
   <!-- Sticky Header Navigation (Ported & Enhanced from vnchips_old) -->
   <header class="navbar site-header" id="mainNav">

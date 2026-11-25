@@ -8,10 +8,15 @@ require_once __DIR__ . '/../models/Admin.php';
 
 $error = '';
 
-// If already logged in, redirect to dashboard
+// If already logged in, go straight to the first page this account may open
 if (Admin::check()) {
-    header("Location: " . admin_url('index.php'));
+    header("Location: " . Admin::landingUrl());
     exit;
+}
+
+// Sent here because the 24-hour window ran out, not because anything went wrong
+if (isset($_GET['expired'])) {
+    $error = 'Phiên đăng nhập đã quá 24 giờ. Vui lòng đăng nhập lại.';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -22,12 +27,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Please enter both username and password.';
     } else {
         if (Admin::login($username, $password)) {
-            header("Location: " . admin_url('index.php'));
+            // Land on the first page this role may open, not always the dashboard
+            header("Location: " . Admin::landingUrl());
             exit;
         } else {
-            $error = (Admin::$lastError === 'database')
-                ? 'Cannot connect to the database. Please check the DB settings in config/config.local.php.'
-                : 'Invalid username or password. Please try again.';
+            if (Admin::$lastError === 'database') {
+                $error = 'Cannot connect to the database. Please check the DB settings in config/config.local.php.';
+            } elseif (Admin::$lastError === 'disabled') {
+                $error = 'Tài khoản này đã bị khoá. Vui lòng liên hệ quản trị viên cấp cao.';
+            } else {
+                $error = 'Invalid username or password. Please try again.';
+            }
         }
     }
 }

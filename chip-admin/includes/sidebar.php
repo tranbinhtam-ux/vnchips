@@ -27,6 +27,8 @@ $sidebarGroups = [
         'members'    => ['members.php', 'fa-user-tie', 'Team Members', 0],
         'partners'   => ['partners.php', 'fa-handshake', 'Partners', 0],
         'media'      => ['media.php', 'fa-photo-film', 'Media Gallery', 0],
+        'services'   => ['services.php', 'fa-layer-group', 'Design & IP Services', 0],
+        'tooltips'   => ['tooltips.php', 'fa-comment-dots', 'Tooltip Dictionary', 0],
     ],
     'Marketing & Leads' => [
         'inquiries'  => ['inquiries.php', 'fa-envelope-open-text', 'Inquiries & Leads', $newInqCount],
@@ -39,9 +41,28 @@ $sidebarGroups = [
     ],
     'System' => [
         'site-settings' => ['site-settings.php', 'fa-gear', 'Global Settings', 0],
+        'users'         => ['users.php', 'fa-users-gear', 'Users & Permissions', 0],
+        'roles'         => ['roles.php', 'fa-user-lock', 'Roles', 0],
         'profile'       => ['profile.php', 'fa-user-shield', 'Admin Profile', 0],
     ],
 ];
+
+/**
+ * Hide what this admin cannot open. A menu item that leads straight to a
+ * "không đủ quyền" page is worse than no menu item at all.
+ */
+require_once __DIR__ . '/../../models/AdminRole.php';
+foreach ($sidebarGroups as $groupName => $items) {
+    foreach ($items as $key => $item) {
+        $needed = AdminRole::permissionForPage($item[0]);
+        if ($needed && !Admin::can($needed)) {
+            unset($sidebarGroups[$groupName][$key]);
+        }
+    }
+    if (empty($sidebarGroups[$groupName])) {
+        unset($sidebarGroups[$groupName]);
+    }
+}
 ?>
 <!-- Sidebar -->
 <aside class="admin-sidebar">

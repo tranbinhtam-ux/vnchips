@@ -13,8 +13,19 @@ require_once __DIR__ . '/../../models/Setting.php';
 if (!Admin::check()) {
     http_response_code(403);
     echo json_encode([
-        'success' => false, 
+        'success' => false,
         'error' => 'Bạn chưa đăng nhập quản trị viên hoặc phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.'
+    ]);
+    exit;
+}
+
+// Hiding the Live Edit bar is not enough: this endpoint writes settings, so it has
+// to check the permission itself rather than trust that the bar was never rendered.
+if (!Admin::can('live_edit.use')) {
+    http_response_code(403);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Tài khoản của bạn không có quyền sửa nội dung trực tiếp trên giao diện (Live Edit).'
     ]);
     exit;
 }

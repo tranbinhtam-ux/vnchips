@@ -60,7 +60,7 @@ $usage = ServiceTooltip::usageCounts();
 $editing = $editing ?? ['id' => 0, 'keyword' => '', 'title' => '', 'content' => '', 'is_active' => 1];
 
 $adminTitle = 'Từ điển Tooltip';
-$adminActivePage = 'services';
+$adminActivePage = 'tooltips';
 
 require_once __DIR__ . '/includes/header.php';
 ?>
