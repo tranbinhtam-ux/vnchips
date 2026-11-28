@@ -3683,20 +3683,21 @@ a.key-team-card {
 }
 
 .sus-detail-subtitle {
+  /* intro runs the full width of the three module cards below, justified */
   font-size: 1.2rem;
   line-height: 1.6;
   color: var(--primary-orange);
   font-weight: 600;
-  max-width: 880px;
   margin-bottom: 24px;
+  text-align: justify;
 }
 
 .sus-detail-desc {
   font-size: 1.05rem;
   line-height: 1.8;
   color: #334155;
-  max-width: 950px;
   margin-bottom: 18px;
+  text-align: justify;
 }
 
 /* 3 Competencies / Modules Grid */
