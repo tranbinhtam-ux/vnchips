@@ -102,7 +102,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- Full Immersion Contact Section matching Page 6 of PDF -->
 <section class="contact-page-section" id="live-contact-section">
-  <div class="contact-page-bg"></div>
+  <div class="contact-page-bg" style="background-image: url('<?= lt_img('hero_contact', 'images/contact_hero_office.webp') ?>');"<?= lt_img_attr('hero_contact', 'Ảnh nền trang Talk To Us', 'Khuyến nghị 1920 × 1080 px (tối thiểu 1600 × 900), ảnh ngang, WEBP/JPG dưới 600 KB. Ảnh phủ kín màn hình, bị làm tối 55% để nổi chữ và form.') ?> data-lt-pen="br"></div>
   <div class="container contact-page-content">
 
     <!-- Title -->

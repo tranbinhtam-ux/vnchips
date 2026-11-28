@@ -22,7 +22,7 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- 1. Hero Section (Deep Blue PCB Circuitry Backdrop) -->
-<section class="sus-hero-section" style="background-image: url('<?= asset(Setting::getOr('hero_sustainable', 'images/hero_chip_bg.webp')) ?>'); background-size: cover; background-position: center;">
+<section class="sus-hero-section" style="background-image: url('<?= lt_img('hero_sustainable', 'images/hero_chip_bg.webp') ?>'); background-size: cover; background-position: center;"<?= lt_img_attr('hero_sustainable', 'Ảnh banner Sustainable', 'Khuyến nghị 1920 × 650 px (tối thiểu 1600 × 650), ảnh ngang, WEBP/JPG dưới 500 KB. Ảnh cắt kiểu cover, canh giữa; tiêu đề nằm góc dưới trái.') ?> data-lt-pen="br">
   <div class="sus-hero-bg"></div>
   <div class="container sus-hero-content">
     <h1 class="sus-hero-title"<?= lt_attr('sus_hero_title', false, 'Tiêu đề Hero') ?>><?= lt('sus_hero_title', 'SUSTAINABLE') ?></h1>

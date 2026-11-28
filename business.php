@@ -24,7 +24,7 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- 1. Hero Section (PCB Traces Backdrop) -->
-<section class="biz-hero-section" style="background-image: url('<?= asset(Setting::getOr('hero_business', 'images/hero_chip_bg.webp')) ?>'); background-size: cover; background-position: center;">
+<section class="biz-hero-section" style="background-image: url('<?= lt_img('hero_business', 'images/hero_chip_bg.webp') ?>'); background-size: cover; background-position: center;"<?= lt_img_attr('hero_business', 'Ảnh banner Business', 'Khuyến nghị 1920 × 650 px (tối thiểu 1600 × 650), ảnh ngang, WEBP/JPG dưới 500 KB. Ảnh cắt kiểu cover, canh giữa; tiêu đề nằm góc dưới trái.') ?> data-lt-pen="br">
   <div class="biz-hero-bg"></div>
   <div class="container biz-hero-content">
     <h1 class="biz-hero-title"<?= lt_attr('biz_hero_title', false, 'Tiêu đề Hero') ?>><?= lt('biz_hero_title', 'BUSINESS') ?></h1>

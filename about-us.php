@@ -149,7 +149,7 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- 1. Hero Section (Workspace Backdrop) -->
-<section class="about-hero-section" id="live-about-hero" style="background-image: url('<?= asset($aboutHeroBg) ?>'); background-size: cover; background-position: center;">
+<section class="about-hero-section" id="live-about-hero" style="background-image: url('<?= asset($aboutHeroBg) ?>'); background-size: cover; background-position: center;"<?= lt_img_attr('hero_about', 'Ảnh banner About Us', 'Khuyến nghị 1920 × 650 px (tối thiểu 1600 × 650), ảnh ngang, WEBP/JPG dưới 500 KB. Ảnh cắt kiểu cover, canh giữa; tiêu đề nằm góc dưới trái.') ?> data-lt-pen="br">
   <div class="about-hero-bg"></div>
   <div class="container about-hero-content">
     <h1 class="about-hero-title" id="live-about-hero-title"><?= e($aboutHeroTitle) ?></h1>

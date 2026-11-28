@@ -23,7 +23,7 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- 1. Hero Header Banner -->
-<section class="page-hero-banner" style="background: linear-gradient(180deg, rgba(6, 15, 30, 0.88) 0%, rgba(6, 15, 30, 0.98) 100%), url('<?= asset(Setting::getOr('hero_partners', 'images/hero_chip_bg.webp')) ?>') center/cover no-repeat; padding: 180px 0 85px; position: relative;">
+<section class="page-hero-banner" style="background: linear-gradient(180deg, rgba(6, 15, 30, 0.88) 0%, rgba(6, 15, 30, 0.98) 100%), url('<?= asset(Setting::getOr('hero_partners', 'images/hero_chip_bg.webp')) ?>') center/cover no-repeat; padding: 180px 0 85px; position: relative;"<?= lt_img_attr('hero_partners', 'Ảnh banner Partners (dùng chung trang case study)', 'Khuyến nghị 1920 × 600 px (tối thiểu 1600 × 500), ảnh ngang, WEBP/JPG dưới 500 KB. Trang này phủ một lớp tối lên ảnh nên chọn ảnh có độ tương phản rõ.') ?> data-lt-pen="br">
   <div class="container">
     <div class="reveal active">
       <!-- Breadcrumb -->

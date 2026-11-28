@@ -1150,8 +1150,9 @@ body.admin-edit-active .live-lt-pos { position: relative; }
 body.admin-edit-active .live-lt-pen { display: inline-flex; }
 body.admin-edit-active .live-lt { outline: 1px dashed rgba(245, 158, 11, 0.55); outline-offset: 3px; }
 body.admin-edit-active .live-lt-img-wrap { outline: 1px dashed rgba(14, 165, 233, 0.6); outline-offset: 2px; }
-/* hero background: the header overlaps the top edge, so the pen sits at the bottom-right */
-.media-hero-bg .live-lt-pen--img { top: auto; bottom: 28px; right: 28px; width: 34px; height: 34px; font-size: 0.9rem; filter: brightness(1.4); }
+/* hero backgrounds (data-lt-pen="br"): the fixed header overlaps the top edge, so the pen sits bottom-right */
+[data-lt-pen="br"] > .live-lt-pen--img { top: auto; bottom: 28px; right: 28px; width: 34px; height: 34px; font-size: 0.9rem; filter: brightness(1.4); z-index: 80; }
+body.admin-edit-active [data-lt-pen="br"] { outline-offset: -3px; }
 /* inline text slots (span inside a button/link) keep their flow */
 body.admin-edit-active span.live-lt { display: inline-block; }
 .live-edit-badge.badge-edit-tech-ai { top: 24px !important; right: 24px !important; }
@@ -5827,11 +5828,18 @@ function removeLiveConductCardRow(idx) {
   // ---------------- image ----------------
   function srcOf(img) {
     if (img.tagName === 'IMG') return img.getAttribute('src') || '';
-    const m = (img.style.backgroundImage || '').match(/url\(["']?(.*?)["']?\)/);
+    const m = (img.style.backgroundImage || getComputedStyle(img).backgroundImage || '').match(/url\(["']?(.*?)["']?\)/);
     return m ? m[1] : '';
   }
   function setSrc(img, url) {
-    if (img.tagName === 'IMG') img.src = url; else img.style.backgroundImage = "url('" + url + "')";
+    if (img.tagName === 'IMG') { img.src = url; return; }
+    // keep a gradient overlay (page-hero-banner) and only swap the url() part
+    const current = img.style.backgroundImage || getComputedStyle(img).backgroundImage || '';
+    if (/gradient\(/.test(current) && /url\(/.test(current)) {
+      img.style.backgroundImage = current.replace(/url\((['"]?).*?\1\)/, "url('" + url + "')");
+    } else {
+      img.style.backgroundImage = "url('" + url + "')";
+    }
   }
   function showDims(url) {
     const out = document.getElementById('liDims');
