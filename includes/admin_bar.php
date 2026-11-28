@@ -1144,11 +1144,14 @@ body.admin-edit-active #live-program-detail.live-editable-wrap { position: relat
 }
 .live-lt-pen--img { background: #0EA5E9; top: 8px; right: 8px; width: 26px; height: 26px; font-size: 0.72rem; }
 .live-lt-pen:hover { transform: scale(1.15); background: #F25B22; }
-body.admin-edit-active .live-lt, body.admin-edit-active .live-lt-img-wrap { position: relative; }
+/* only elements that were position:static get relative (set by JS as .live-lt-pos), so absolutely
+   positioned hosts such as a hero background div keep their own positioning */
+body.admin-edit-active .live-lt-pos { position: relative; }
 body.admin-edit-active .live-lt-pen { display: inline-flex; }
 body.admin-edit-active .live-lt { outline: 1px dashed rgba(245, 158, 11, 0.55); outline-offset: 3px; }
 body.admin-edit-active .live-lt-img-wrap { outline: 1px dashed rgba(14, 165, 233, 0.6); outline-offset: 2px; }
-.media-hero-bg .live-lt-pen--img { top: 14px; right: 14px; filter: brightness(1.35); }
+/* hero background: the header overlaps the top edge, so the pen sits at the bottom-right */
+.media-hero-bg .live-lt-pen--img { top: auto; bottom: 28px; right: 28px; width: 34px; height: 34px; font-size: 0.9rem; filter: brightness(1.4); }
 /* inline text slots (span inside a button/link) keep their flow */
 body.admin-edit-active span.live-lt { display: inline-block; }
 .live-edit-badge.badge-edit-tech-ai { top: 24px !important; right: 24px !important; }
@@ -5740,6 +5743,7 @@ function removeLiveConductCardRow(idx) {
       if (el.dataset.ltBound) return;
       el.dataset.ltBound = '1';
       el.classList.add('live-lt');
+      if (getComputedStyle(el).position === 'static') el.classList.add('live-lt-pos');
       const pen = document.createElement('button');
       pen.type = 'button';
       pen.className = 'live-lt-pen';
@@ -5769,6 +5773,7 @@ function removeLiveConductCardRow(idx) {
       const host = img.tagName === 'IMG' ? img.parentElement : img;
       if (!host) return;
       host.classList.add('live-lt-img-wrap');
+      if (getComputedStyle(host).position === 'static') host.classList.add('live-lt-pos');
       const pen = document.createElement('button');
       pen.type = 'button';
       pen.className = 'live-lt-pen live-lt-pen--img';
