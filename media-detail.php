@@ -27,7 +27,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- 1. Hero Header Banner (compact, image only) -->
 <section class="media-hero-section media-hero-section--compact">
-  <div class="media-hero-bg"></div>
+  <div class="media-hero-bg" style="background-image: url('<?= lt_img('hero_media', 'images/media_hero_network.webp') ?>');"<?= lt_img_attr('hero_media', 'Ảnh banner Media Center') ?> data-lt-size="Khuyến nghị 1920 × 650 px (tối thiểu 1600 × 650), ảnh ngang, WEBP hoặc JPG dưới 500 KB. Ảnh được cắt theo kiểu cover, canh giữa ngang và 35% từ trên xuống; phần chữ nằm góc dưới trái."></div>
 </section>
 
 <!-- 2. Article Body Section -->

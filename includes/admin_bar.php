@@ -1148,6 +1148,7 @@ body.admin-edit-active .live-lt, body.admin-edit-active .live-lt-img-wrap { posi
 body.admin-edit-active .live-lt-pen { display: inline-flex; }
 body.admin-edit-active .live-lt { outline: 1px dashed rgba(245, 158, 11, 0.55); outline-offset: 3px; }
 body.admin-edit-active .live-lt-img-wrap { outline: 1px dashed rgba(14, 165, 233, 0.6); outline-offset: 2px; }
+.media-hero-bg .live-lt-pen--img { top: 14px; right: 14px; filter: brightness(1.35); }
 /* inline text slots (span inside a button/link) keep their flow */
 body.admin-edit-active span.live-lt { display: inline-block; }
 .live-edit-badge.badge-edit-tech-ai { top: 24px !important; right: 24px !important; }
@@ -5668,8 +5669,12 @@ function removeLiveConductCardRow(idx) {
       <button type="button" class="vnchip-modal-close" onclick="closeLiveModal('modalLiveImage')">&times;</button>
     </div>
     <div class="vnchip-modal-body">
+      <div id="liSizeHint" style="display: none; background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E3A8A; border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; margin-bottom: 12px;"></div>
       <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
-        <img id="liPreview" src="" alt="" style="width: 220px; height: 130px; object-fit: contain; background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 10px;">
+        <div style="flex: none;">
+          <img id="liPreview" src="" alt="" style="width: 220px; height: 130px; object-fit: contain; background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 10px; display: block;">
+          <div id="liDims" style="font-size: 0.74rem; color: #64748B; margin-top: 4px; text-align: center;"></div>
+        </div>
         <div style="flex: 1; min-width: 220px;">
           <input type="file" id="liFile" accept="image/*" style="display: none;">
           <button type="button" class="vnchip-btn vnchip-btn-primary" onclick="document.getElementById('liFile').click()" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
@@ -5823,10 +5828,22 @@ function removeLiveConductCardRow(idx) {
   function setSrc(img, url) {
     if (img.tagName === 'IMG') img.src = url; else img.style.backgroundImage = "url('" + url + "')";
   }
+  function showDims(url) {
+    const out = document.getElementById('liDims');
+    out.innerText = '';
+    if (!url) return;
+    const probe = new Image();
+    probe.onload = () => { out.innerText = 'Ảnh hiện tại: ' + probe.naturalWidth + ' × ' + probe.naturalHeight + ' px'; };
+    probe.src = url;
+  }
   function openImage(img) {
     curImg = img;
     document.getElementById('liModalTitle').innerText = img.dataset.ltLabel || 'Đổi ảnh';
+    const hint = document.getElementById('liSizeHint');
+    hint.style.display = img.dataset.ltSize ? '' : 'none';
+    hint.innerHTML = img.dataset.ltSize ? '<i class="fa-solid fa-ruler-combined me-1"></i> ' + img.dataset.ltSize.replace(/</g, '&lt;') : '';
     document.getElementById('liPreview').src = srcOf(img);
+    showDims(srcOf(img));
     document.getElementById('liPath').value = '';
     document.getElementById('liStatus').innerHTML = '';
     document.getElementById('btnLiHide').style.display = img.dataset.ltHideable ? '' : 'none';
@@ -5842,6 +5859,7 @@ function removeLiveConductCardRow(idx) {
     fetch(AJAX, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
       if (!res.success) { status.innerHTML = ''; alert(res.error || 'Lỗi tải ảnh.'); return; }
       document.getElementById('liPreview').src = res.full_url;
+      showDims(res.full_url);
       document.getElementById('liPath').value = res.path;
       document.querySelectorAll('[data-lt-img="' + curImg.dataset.ltImg + '"]').forEach(el => { setSrc(el, res.full_url); el.closest('.live-empty-slot') && el.closest('.live-empty-slot').classList.remove('live-empty-slot'); });
       status.innerHTML = '<span style="color:#16A34A;font-weight:700;"><i class="fa-solid fa-circle-check"></i> Đã thay ảnh</span>';
@@ -5855,7 +5873,9 @@ function removeLiveConductCardRow(idx) {
     if (!path) { closeLiveModal('modalLiveImage'); return; }
     post({ action: 'save_setting', key: curImg.dataset.ltImg, value: path }).then(res => {
       if (!res.success) { alert(res.error || 'Lỗi khi lưu.'); return; }
-      const url = /^https?:\/\//.test(path) ? path : BASE + path.replace(/^\//, '').replace(/^assets\//, 'assets/');
+      // same mapping as asset() in PHP: uploads/… stays, everything else lives under assets/
+      const clean = path.replace(/^\//, '');
+      const url = /^https?:\/\//.test(path) ? path : BASE + (clean.indexOf('uploads/') === 0 ? clean : 'assets/' + clean.replace(/^assets\//, ''));
       document.querySelectorAll('[data-lt-img="' + curImg.dataset.ltImg + '"]').forEach(el => setSrc(el, url));
       closeLiveModal('modalLiveImage'); toast('✓ Đã lưu đường dẫn ảnh');
     });

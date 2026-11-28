@@ -216,6 +216,8 @@ function lt_admin($adminPath, $label) {
 }
 
 /** Attributes for the <img> (or background element) of a live-image slot */
-function lt_img_attr($key, $label = '') {
-    return ' data-lt-img="' . e($key) . '"' . ($label !== '' ? ' data-lt-label="' . e($label) . '"' : '');
+function lt_img_attr($key, $label = '', $sizeHint = '') {
+    return ' data-lt-img="' . e($key) . '"'
+         . ($label !== '' ? ' data-lt-label="' . e($label) . '"' : '')
+         . ($sizeHint !== '' ? ' data-lt-size="' . e($sizeHint) . '"' : '');
 }
