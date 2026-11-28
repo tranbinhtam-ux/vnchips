@@ -197,6 +197,9 @@ if (($rawCc = Setting::get('about_conduct_cards', '')) !== '') {
       <a href="<?= admin_url('index.php') ?>" target="_blank" rel="noopener noreferrer" class="admin-bar-btn" title="Bảng điều khiển Tổng quan (Tab mới)">
         <i class="fa-solid fa-gauge-high"></i> Dashboard
       </a>
+      <a href="<?= admin_url('menus.php') ?>" target="_blank" rel="noopener noreferrer" class="admin-bar-btn" title="Quản lý menu điều hướng (Tab mới)">
+        <i class="fa-solid fa-bars"></i> Menu
+      </a>
       <a href="<?= admin_url('page-sections.php') ?>" target="_blank" rel="noopener noreferrer" class="admin-bar-btn" title="Quản lý khối trang tĩnh (Tab mới)">
         <i class="fa-solid fa-cubes"></i> Page Sections
       </a>
@@ -1157,8 +1160,6 @@ body.admin-edit-active span.live-lt { display: inline-block; }
   background: linear-gradient(135deg, #475569 0%, #1E293B 100%) !important;
   z-index: 70 !important;
 }
-#vnchipNav .live-admin-badge { top: auto !important; bottom: -22px !important; right: 0 !important; padding: 4px 10px; font-size: 0.66rem; }
-#vnchipNav.live-editable-wrap { position: relative; }
 </style>
 
 <!-- 3. Modal Quick Edit: 3 Golden Stats -->

@@ -325,7 +325,7 @@ $renderMegaItems = function (array $items) {
       </button>
 
       <!-- Main Navigation Menu -->
-      <nav class="navbar-collapse collapse" id="vnchipNav" aria-label="Main Navigation"<?= lt_admin('menus.php', 'Quản lý menu điều hướng') ?>>
+      <nav class="navbar-collapse collapse" id="vnchipNav" aria-label="Main Navigation">
         <ul class="navbar-nav ms-auto align-items-center">
           <?php foreach ($parents as $item): ?>
             <?php if ($item['type'] === 'button'): ?>
