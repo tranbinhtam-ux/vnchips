@@ -1157,7 +1157,7 @@ body.admin-edit-active span.live-lt { display: inline-block; }
   background: linear-gradient(135deg, #475569 0%, #1E293B 100%) !important;
   z-index: 70 !important;
 }
-#vnchipNav .live-admin-badge { top: 50% !important; transform: translateY(-50%); right: -8px !important; padding: 5px 10px; font-size: 0.68rem; }
+#vnchipNav .live-admin-badge { top: auto !important; bottom: -22px !important; right: 0 !important; padding: 4px 10px; font-size: 0.66rem; }
 #vnchipNav.live-editable-wrap { position: relative; }
 </style>
 
