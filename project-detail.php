@@ -1,21 +1,14 @@
 <?php
 /**
  * Partners Project Detail Page (cards on business.php#partners-projects)
- * Projects are defined in data/projects.php
+ * Projects: models/Project.php (data/projects.php defaults + Live Edit override on business.php)
  */
 
 require_once __DIR__ . '/config/config.php';
-
-$projects = require __DIR__ . '/data/projects.php';
+require_once __DIR__ . '/models/Project.php';
 
 $slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
-$project = null;
-foreach ($projects as $item) {
-    if ($item['slug'] === $slug) {
-        $project = $item;
-        break;
-    }
-}
+$project = Project::bySlug($slug);
 
 if (!$project) {
     header('Location: ' . url('business.php#partners-projects'));
@@ -43,7 +36,7 @@ require_once __DIR__ . '/includes/header.php';
 
     <div class="biz-rd-header">
       <h2 class="biz-rd-title"><?= e($project['title']) ?></h2>
-      <span class="biz-rd-badge">Partners Projects</span>
+      <span class="biz-rd-badge"<?= lt_attr('project_detail_badge', false, 'Nhãn trang dự án') ?>><?= lt('project_detail_badge', 'Partners Projects') ?></span>
     </div>
 
     <div class="biz-rd-top-grid">

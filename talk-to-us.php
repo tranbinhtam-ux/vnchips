@@ -104,12 +104,12 @@ require_once __DIR__ . '/includes/header.php';
 <section class="contact-page-section" id="live-contact-section">
   <div class="contact-page-bg"></div>
   <div class="container contact-page-content">
-    
+
     <!-- Title -->
     <h1 class="contact-page-title" id="live-contact-title"><?= e($contactTitle) ?></h1>
 
     <div class="contact-main-grid" id="live-contact-grid">
-      
+
       <!-- Left Column: VNCHIP Offices & Contact Details -->
       <div class="contact-left-col">
         <h2 class="contact-offices-title" id="live-contact-offices-title"><?= e($contactOfficesTitle) ?></h2>
@@ -118,14 +118,14 @@ require_once __DIR__ . '/includes/header.php';
         </p>
 
         <div class="contact-items-list">
-          
+
           <!-- Vietnam Office -->
           <div class="contact-item-row">
             <div class="contact-icon-box">
               <i class="fa-solid fa-location-dot"></i>
             </div>
             <div>
-              <div class="contact-item-label">VIETNAM OFFICE</div>
+              <div class="contact-item-label"<?= lt_attr('contact_label_vn', false, 'Nhãn văn phòng 1') ?>><?= lt('contact_label_vn', 'VIETNAM OFFICE') ?></div>
               <div class="contact-item-val" id="live-contact-address-vn"><?= nl2br(e($addressVn)) ?></div>
             </div>
           </div>
@@ -136,7 +136,7 @@ require_once __DIR__ . '/includes/header.php';
               <i class="fa-solid fa-location-dot"></i>
             </div>
             <div>
-              <div class="contact-item-label">USA OFFICE</div>
+              <div class="contact-item-label"<?= lt_attr('contact_label_us', false, 'Nhãn văn phòng 2') ?>><?= lt('contact_label_us', 'USA OFFICE') ?></div>
               <div class="contact-item-val" id="live-contact-address-us"><?= nl2br(e($addressUs)) ?></div>
             </div>
           </div>
@@ -147,7 +147,7 @@ require_once __DIR__ . '/includes/header.php';
               <i class="fa-solid fa-phone"></i>
             </div>
             <div>
-              <div class="contact-item-label">PHONE</div>
+              <div class="contact-item-label"<?= lt_attr('contact_label_phone', false, 'Nhãn điện thoại') ?>><?= lt('contact_label_phone', 'PHONE') ?></div>
               <div class="contact-item-val" id="live-contact-phone">
                 <a href="tel:<?= str_replace([' ', '-', '.'], '', e($phone)) ?>"><?= e($phone) ?></a>
               </div>
@@ -160,7 +160,7 @@ require_once __DIR__ . '/includes/header.php';
               <i class="fa-solid fa-envelope"></i>
             </div>
             <div>
-              <div class="contact-item-label">EMAIL</div>
+              <div class="contact-item-label"<?= lt_attr('contact_label_email', false, 'Nhãn email') ?>><?= lt('contact_label_email', 'EMAIL') ?></div>
               <div class="contact-item-val" id="live-contact-email">
                 <a href="mailto:<?= e($email) ?>"><?= e($email) ?></a>
               </div>
@@ -173,7 +173,7 @@ require_once __DIR__ . '/includes/header.php';
       <!-- Right Column: Interactive Floating Inquiry Form -->
       <div class="contact-right-col">
         <div class="contact-card-box" id="contact-form">
-          
+
           <?php if ($successMessage): ?>
             <div style="background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; padding: 16px; border-radius: 12px; margin-bottom: 24px; font-weight: 600; font-size: 0.92rem;">
               <i class="fa-solid fa-circle-check" style="color: #10B981; margin-right: 6px;"></i> <?= e($successMessage) ?>
@@ -187,9 +187,9 @@ require_once __DIR__ . '/includes/header.php';
           <?php endif; ?>
 
           <form action="<?= url('talk-to-us.php') ?>" method="POST" id="contactInquiryForm">
-            
+
             <div class="contact-form-grid">
-              
+
               <!-- First Name -->
               <div class="contact-input-wrap">
                 <label class="contact-input-label" for="first_name">First Name*</label>
@@ -252,9 +252,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <?= Captcha::antiSpamFields() ?>
 
-            <button type="submit" class="contact-submit-btn">
-              Submit Inquiry
-            </button>
+            <button type="submit" class="contact-submit-btn"<?= lt_attr('contact_submit_text', false, 'Chữ nút gửi') ?>><?= lt('contact_submit_text', 'Submit Inquiry') ?></button>
 
           </form>
 

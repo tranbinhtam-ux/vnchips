@@ -210,6 +210,17 @@ if (empty($all_menus)) {
     }
 }
 
+// Mega-menu copy (tag line, intro paragraph, action button) is a Live Text slot per menu entry:
+// menu_<id>_tag / menu_<id>_intro / menu_<id>_action_text / menu_<id>_action_link
+foreach ($parents as $pi => $pm) {
+    $mid = 'menu_' . (int)$pm['id'];
+    $parents[$pi]['tag']         = Setting::getOr($mid . '_tag', $pm['tag'] ?? '');
+    $parents[$pi]['intro']       = Setting::getOr($mid . '_intro', $pm['intro'] ?? '');
+    $parents[$pi]['action_text'] = Setting::getOr($mid . '_action_text', $pm['action_text'] ?? '');
+    $parents[$pi]['action_link'] = Setting::getOr($mid . '_action_link', $pm['action_link'] ?? '');
+    $parents[$pi]['lt_id']       = $mid;
+}
+
 /**
  * Render the links of one mega-menu column; items with children get a collapsible sub-list
  */
@@ -340,10 +351,10 @@ $renderMegaItems = function (array $items) {
                           <a href="<?= e($item['link']) ?>" class="mega-side-cover" aria-label="<?= e($item['title']) ?>"></a>
                           <div>
                             <h3 class="fw-black text-white mb-2 mega-box-title"><?= e($item['title']) ?></h3>
-                            <p class="mega-box-desc"><?= e($item['intro']) ?></p>
+                            <p class="mega-box-desc"<?= !empty($item['lt_id']) ? lt_attr($item['lt_id'] . '_intro', false, 'Giới thiệu menu ' . $item['title']) : '' ?>><?= e($item['intro']) ?></p>
                           </div>
-                          <a href="<?= e($item['action_link'] ?? url('talk-to-us.php')) ?>" class="mega-side-action">
-                            <?= e($item['action_text'] ?? 'GET IN TOUCH') ?> <i class="fas fa-arrow-right ms-1"></i>
+                          <a href="<?= e($item['action_link'] ?? url('talk-to-us.php')) ?>" class="mega-side-action"<?= !empty($item['lt_id']) ? ' data-lt="' . e($item['lt_id'] . '_action_link') . '" data-lt-attr="href" data-lt-label="' . e('Link nút menu ' . $item['title']) . '"' : '' ?>>
+                            <span<?= !empty($item['lt_id']) ? lt_attr($item['lt_id'] . '_action_text', false, 'Chữ nút menu ' . $item['title']) : '' ?>><?= e($item['action_text'] ?? 'GET IN TOUCH') ?></span> <i class="fas fa-arrow-right ms-1"></i>
                           </a>
                         </div>
                       </div>

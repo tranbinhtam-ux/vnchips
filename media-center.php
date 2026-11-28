@@ -39,15 +39,15 @@ require_once __DIR__ . '/includes/header.php';
 <section class="media-hero-section">
   <div class="media-hero-bg"></div>
   <div class="container media-hero-content">
-    <h1 class="media-hero-title">MEDIA CENTER</h1>
+    <h1 class="media-hero-title"<?= lt_attr('media_hero_title', false, 'Tiêu đề Hero') ?>><?= lt('media_hero_title', 'MEDIA CENTER') ?></h1>
   </div>
 </section>
 
 <!-- 2. Main Media Center Content Section -->
 <section class="media-center-page-section">
   <div class="container">
-    
-    <h2 class="media-page-title">MEDIA CENTER</h2>
+
+    <h2 class="media-page-title"<?= lt_attr('media_page_title', false, 'Tiêu đề trang') ?>><?= lt('media_page_title', 'MEDIA CENTER') ?></h2>
 
     <!-- Filter Pills & Search Bar -->
     <div class="media-filter-bar">
@@ -103,7 +103,7 @@ require_once __DIR__ . '/includes/header.php';
 
       <!-- Carousel / Pagination Arrows matching Page 5 of PDF -->
       <div class="media-pagination-row">
-        <?php 
+        <?php
           $prevPage = max(1, $page - 1);
           $nextPage = min($totalPages, $page + 1);
           $queryBase = '?';

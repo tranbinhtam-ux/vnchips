@@ -80,13 +80,42 @@ function formatDate($dateString, $format = 'M d, Y') {
  * Generate URL-friendly slug
  */
 function slugify($text) {
-    $text = preg_replace('~[^\pL\d]+~u', '-', $text);
-    $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-    $text = preg_replace('~[^-\w]+~', '', $text);
-    $text = trim($text, '-');
-    $text = preg_replace('~-+~', '-', $text);
-    $text = strtolower($text);
-    return empty($text) ? 'n-a' : $text;
+    $text = preg_replace('~[^\pL\d]+~u', '-', (string)$text);
+    // iconv //TRANSLIT depends on the process locale: under the web server (locale "C") it
+    // returns "?" or false for anything non-ASCII, which used to collapse every slug to "n-a".
+    // Strip Vietnamese diacritics ourselves first, then let iconv handle whatever is left.
+    $text = strtr($text, slugify_accent_map());
+    $ascii = @iconv('utf-8', 'us-ascii//TRANSLIT//IGNORE', $text);
+    if ($ascii === false || trim($ascii, '-? ') === '') {
+        $ascii = preg_replace('~[^ -~]~', '', $text);
+    }
+    $ascii = preg_replace('~[^-\w]+~', '', $ascii);
+    $ascii = trim($ascii, '-');
+    $ascii = preg_replace('~-+~', '-', $ascii);
+    $ascii = strtolower($ascii);
+    return $ascii === '' ? 'n-a' : $ascii;
+}
+
+/** Vietnamese (and common Latin) accented letters -> ASCII, for slugify() */
+function slugify_accent_map() {
+    static $map = null;
+    if ($map !== null) return $map;
+    $groups = [
+        'a' => 'àáạảãâầấậẩẫăằắặẳẵ', 'A' => 'ÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴ',
+        'e' => 'èéẹẻẽêềếệểễ',       'E' => 'ÈÉẸẺẼÊỀẾỆỂỄ',
+        'i' => 'ìíịỉĩ',             'I' => 'ÌÍỊỈĨ',
+        'o' => 'òóọỏõôồốộổỗơờớợởỡ', 'O' => 'ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ',
+        'u' => 'ùúụủũưừứựửữ',       'U' => 'ÙÚỤỦŨƯỪỨỰỬỮ',
+        'y' => 'ỳýỵỷỹ',             'Y' => 'ỲÝỴỶỸ',
+        'd' => 'đ',                 'D' => 'Đ',
+    ];
+    $map = [];
+    foreach ($groups as $ascii => $chars) {
+        foreach (preg_split('//u', $chars, -1, PREG_SPLIT_NO_EMPTY) as $ch) {
+            $map[$ch] = $ascii;
+        }
+    }
+    return $map;
 }
 
 /**
@@ -109,7 +138,8 @@ function isActiveNav($currentPage, $targetPage) {
  * Keep an already URL-safe slug as-is (old slugs contain "_"), otherwise slugify it
  */
 function normalizeSlug($text) {
-    $text = trim($text);
+    $text = trim((string)$text);
+    if ($text === '') return '';   // let the caller fall back to a slug built from the title
     return preg_match('~^[a-z0-9_-]+$~', $text) ? $text : slugify($text);
 }
 
@@ -146,4 +176,37 @@ function trackVisit() {
     } catch (PDOException $e) {
         error_log("trackVisit error: " . $e->getMessage());
     }
+}
+
+/* ==========================================================================
+   LIVE TEXT / LIVE IMAGE
+   Mark a piece of text or an image that used to be hard-coded in a template so a
+   signed-in admin can edit it in place (Live Edit pencil). The value lives in the
+   settings table under $key; the template's literal stays as the default.
+   ========================================================================== */
+
+/** Current value of a live-text slot (escaped unless $html) */
+function lt($key, $default, $html = false) {
+    $value = Setting::getOr($key, $default);
+    return $html ? $value : e($value);
+}
+
+/**
+ * Attributes to put on the element that holds the text, e.g.
+ *   <h2<?= lt_attr('home_business_title') ?>><?= lt('home_business_title', 'BUSINESS') ?></h2>
+ * $html = true lets the editor save HTML (paragraph blocks); $label is the field name shown
+ * in the editor (defaults to a readable form of the key).
+ */
+function lt_attr($key, $html = false, $label = '') {
+    return ' data-lt="' . e($key) . '"' . ($html ? ' data-lt-html="1"' : '') . ($label !== '' ? ' data-lt-label="' . e($label) . '"' : '');
+}
+
+/** Image URL for a live-image slot */
+function lt_img($key, $default) {
+    return asset(Setting::getOr($key, $default));
+}
+
+/** Attributes for the <img> (or background element) of a live-image slot */
+function lt_img_attr($key, $label = '') {
+    return ' data-lt-img="' . e($key) . '"' . ($label !== '' ? ' data-lt-label="' . e($label) . '"' : '');
 }

@@ -4799,3 +4799,6 @@ a.key-team-card {
 .about-cleanroom-section:has(.sus-cleanroom-line--bottom) {
   padding-bottom: 70px;
 }
+
+/* Live Edit: an empty logo slot is only drawn for a signed-in admin, as a dashed placeholder */
+.biz-uni-card.live-empty-slot { opacity: 0.45; border: 2px dashed #CBD5E1; }

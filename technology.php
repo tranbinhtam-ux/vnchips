@@ -27,13 +27,9 @@ require_once __DIR__ . '/includes/header.php';
           <li style="color: var(--primary-orange); font-weight: 700; text-transform: uppercase;">Technology</li>
         </ol>
       </nav>
-      
-      <h1 style="font-family: var(--heading-font); font-size: 3.2rem; font-weight: 900; color: #FFFFFF; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px;">
-        OUR TECHNOLOGIES
-      </h1>
-      <p style="color: #CBD5E1; font-size: 1.15rem; max-width: 750px; line-height: 1.7; margin: 0;">
-        Pioneering modular silicon architectures, high-bandwidth interconnects, and AI-native System-on-Chip engineering.
-      </p>
+
+      <h1 style="font-family: var(--heading-font); font-size: 3.2rem; font-weight: 900; color: #FFFFFF; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px;"<?= lt_attr('tech_hero_title', false, 'Tiêu đề Hero') ?>><?= lt('tech_hero_title', 'OUR TECHNOLOGIES') ?></h1>
+      <p style="color: #CBD5E1; font-size: 1.15rem; max-width: 750px; line-height: 1.7; margin: 0;"<?= lt_attr('tech_hero_subtitle', false, 'Mô tả Hero') ?>><?= lt('tech_hero_subtitle', 'Pioneering modular silicon architectures, high-bandwidth interconnects, and AI-native System-on-Chip engineering.') ?></p>
     </div>
   </div>
 </section>
@@ -50,7 +46,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
       <?php else: ?>
       <div class="row align-items-center" style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center;">
-        
+
         <div class="tech-text-col reveal active">
           <div style="display: inline-flex; align-items: center; gap: 10px; background: rgba(242, 91, 34, 0.1); color: var(--primary-orange); padding: 6px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 20px; letter-spacing: 0.5px;">
             <i class="fas fa-microchip"></i> Architectural Evolution
@@ -65,7 +61,7 @@ require_once __DIR__ . '/includes/header.php';
             <p style="margin-bottom: 25px;">
               This approach improves silicon yields, significantly reduces total die cost, and allows mixing of process nodes — combining leading-edge compute chiplets with mature-node I/O, power management, or analog components.
             </p>
-            
+
             <div style="background: #F8FAFC; border-left: 4px solid var(--primary-orange); padding: 28px 32px; border-radius: 0 16px 16px 0; box-shadow: 0 6px 20px rgba(0,0,0,0.03);">
               <h4 style="font-family: var(--heading-font); font-weight: 800; color: var(--primary-orange); margin-bottom: 10px; font-size: 1.1rem; text-transform: uppercase;">
                 VNCHIP Labs Expertise
@@ -97,7 +93,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
       <?php else: ?>
       <div class="row align-items-center" style="display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 60px; align-items: center;">
-        
+
         <div class="tech-media-col reveal active">
           <div style="border-radius: 24px; overflow: hidden; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12); border: 1px solid #E2E8F0; background: #0A192F;">
             <img src="<?= asset('uploads/media/img_1777025379_0.webp') ?>" alt="High Speed Interconnect Technology" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease;">
@@ -118,7 +114,7 @@ require_once __DIR__ . '/includes/header.php';
             <p style="margin-bottom: 25px;">
               VNCHIP Labs brings deep expertise in designing and integrating interconnect fabrics across multiple abstraction levels — from PHY and link layers to protocol adaptation (e.g., AXI, CHI). We help customers evaluate trade-offs between latency, bandwidth, power efficiency, and implementation complexity, while ensuring strict compliance with industry specifications.
             </p>
-            
+
             <div style="background: #FFFFFF; border-left: 4px solid #0284C7; padding: 28px 32px; border-radius: 0 16px 16px 0; box-shadow: 0 6px 20px rgba(0,0,0,0.04); border: 1px solid #E2E8F0; border-left: 4px solid #0284C7;">
               <h4 style="font-family: var(--heading-font); font-weight: 800; color: #0284C7; margin-bottom: 10px; font-size: 1.1rem; text-transform: uppercase;">
                 Custom Protocol Optimization
@@ -138,8 +134,13 @@ require_once __DIR__ . '/includes/header.php';
   <!-- Section 3: AI-Centric SoC Building -->
   <section class="tech-section" id="ai-centric-soc" style="padding: 100px 0;">
     <div class="container">
+      <?php if (!empty($customTechAi = Setting::get('section_tech_ai'))): ?>
+        <div class="reveal active">
+          <?= $customTechAi ?>
+        </div>
+      <?php else: ?>
       <div class="row align-items-center" style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center;">
-        
+
         <div class="tech-text-col reveal active">
           <div style="display: inline-flex; align-items: center; gap: 10px; background: rgba(242, 91, 34, 0.1); color: var(--primary-orange); padding: 6px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 20px; letter-spacing: 0.5px;">
             <i class="fas fa-brain"></i> Accelerated Intelligence
@@ -151,7 +152,7 @@ require_once __DIR__ . '/includes/header.php';
             <p style="margin-bottom: 20px;">
               AI workloads are fundamentally reshaping how SoCs are architected — from compute topology and tensor acceleration to memory bandwidth and data movement. Building an AI-optimized SoC requires a holistic approach that integrates heterogeneous compute engines, memory subsystems, interconnect fabrics, and software-aware compiler co-design.
             </p>
-            
+
             <div style="background: #F8FAFC; border-left: 4px solid var(--primary-orange); padding: 28px 32px; border-radius: 0 16px 16px 0; margin-bottom: 25px; box-shadow: 0 6px 20px rgba(0,0,0,0.03);">
               <h4 style="font-family: var(--heading-font); font-weight: 800; color: var(--primary-orange); margin-bottom: 10px; font-size: 1.1rem; text-transform: uppercase;">
                 Strategic Integration
@@ -174,6 +175,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
       </div>
+      <?php endif; ?>
     </div>
   </section>
 

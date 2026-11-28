@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/models/Admin.php';
 
 $pageTitle = 'Sustainable & Talent Development | VNCHIP Technology JSC';
 $pageDescription = 'VNCHIP believes talent is the core value of semiconductor innovation. Discover our Talent Program, Interns Program, Social Responsibilities, and ISO-certified Clean Room confidentiality.';
@@ -24,7 +25,7 @@ require_once __DIR__ . '/includes/header.php';
 <section class="sus-hero-section" style="background-image: url('<?= asset(Setting::getOr('hero_sustainable', 'images/hero_chip_bg.webp')) ?>'); background-size: cover; background-position: center;">
   <div class="sus-hero-bg"></div>
   <div class="container sus-hero-content">
-    <h1 class="sus-hero-title">SUSTAINABLE</h1>
+    <h1 class="sus-hero-title"<?= lt_attr('sus_hero_title', false, 'Tiêu đề Hero') ?>><?= lt('sus_hero_title', 'SUSTAINABLE') ?></h1>
   </div>
 </section>
 
@@ -33,7 +34,7 @@ require_once __DIR__ . '/includes/header.php';
   <div class="container">
     <div class="sus-social-card-wrap">
       <div class="sus-social-card">
-        <h2 class="sus-social-title">SOCIAL RESPONSIBILITIES</h2>
+        <h2 class="sus-social-title"<?= lt_attr('sus_social_title', false, 'Tiêu đề Social Responsibilities') ?>><?= lt('sus_social_title', 'SOCIAL RESPONSIBILITIES') ?></h2>
         <div class="sus-social-line"></div>
         <?php if (!empty($susEsgText)): ?>
           <div class="sus-social-text" id="live-sus-social-text">
@@ -88,9 +89,9 @@ require_once __DIR__ . '/includes/header.php';
 <!-- 4. Talents Development Section (Dark Navy) -->
 <section class="sus-talents-section" id="talents-development">
   <div class="container">
-    
-    <h2 class="sus-talents-title">TALENTS DEVELOPMENT</h2>
-    
+
+    <h2 class="sus-talents-title"<?= lt_attr('sus_talents_title', false, 'Tiêu đề Talents Development') ?>><?= lt('sus_talents_title', 'TALENTS DEVELOPMENT') ?></h2>
+
     <div class="sus-talents-intro" id="live-sus-talents-intro">
       <?= $talentsIntro ?>
     </div>
@@ -98,31 +99,7 @@ require_once __DIR__ . '/includes/header.php';
     <!-- 2 Large Program Cards (open the program detail page) -->
     <div class="sus-program-grid">
 
-      <!-- Card 1: Talent Program -->
-      <a href="<?= url('program-detail.php?program=talent') ?>" class="program-card" title="VNCHIP Talent Program">
-        <div class="program-card-inner">
-          <div class="program-card-visual">
-            <img src="<?= asset('images/interns.svg') ?>" alt="VNCHIP Talent Program Icon" class="program-icon-img">
-          </div>
-          <div class="program-card-footer">
-            <div class="program-card-brand">VNCHIP</div>
-            <div class="program-card-title">TALENT PROGRAM</div>
-          </div>
-        </div>
-      </a>
-
-      <!-- Card 2: Interns Program -->
-      <a href="<?= url('program-detail.php?program=interns') ?>" class="program-card" title="VNCHIP Interns Program">
-        <div class="program-card-inner">
-          <div class="program-card-visual">
-            <img src="<?= asset('images/talent.svg') ?>" alt="VNCHIP Interns Program Icon" class="program-icon-img">
-          </div>
-          <div class="program-card-footer">
-            <div class="program-card-brand">VNCHIP</div>
-            <div class="program-card-title">INTERNS PROGRAM</div>
-          </div>
-        </div>
-      </a>
+      <?php require __DIR__ . '/includes/program_cards.php'; ?>
 
     </div>
 
@@ -133,7 +110,7 @@ require_once __DIR__ . '/includes/header.php';
 <section class="sus-confidentiality-section" id="confidentiality">
   <div class="container">
     <div class="sus-confidentiality-card">
-      <h2 class="sus-section-title">CONFIDENTIALITY</h2>
+      <h2 class="sus-section-title"<?= lt_attr('sus_confidentiality_title', false, 'Tiêu đề Confidentiality') ?>><?= lt('sus_confidentiality_title', 'CONFIDENTIALITY') ?></h2>
       <div class="sus-paragraphs" id="live-sus-confidentiality-text">
         <?= $confidentialityText ?>
       </div>
@@ -145,7 +122,7 @@ require_once __DIR__ . '/includes/header.php';
 <section class="biz-values-section" id="partner">
   <div class="container">
 
-    <h2 class="biz-values-title">PARTNERS</h2>
+    <h2 class="biz-values-title"<?= lt_attr('sus_partner_title', false, 'Tiêu đề Partners') ?>><?= lt('sus_partner_title', 'PARTNERS') ?></h2>
 
     <div class="biz-uni-header">
       <blockquote class="biz-values-quote" id="live-sus-partner-quote">
@@ -158,22 +135,29 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <!-- 5 University Logos Grid -->
+    <?php
+      // University / institution logos: each slot is a Live Image (click the pencil to replace)
+      $uniLogos = [
+        ['key' => 'sus_uni_logo_1', 'img' => 'images/partner_hcmute.png', 'alt' => 'HCMUTE University Partner'],
+        ['key' => 'sus_uni_logo_2', 'img' => 'images/partner_uit.png',    'alt' => 'UIT University Partner'],
+        ['key' => 'sus_uni_logo_3', 'img' => 'images/partner_vgu.png',    'alt' => 'Vietnamese-German University Partner'],
+        ['key' => 'sus_uni_logo_4', 'img' => 'images/partner_bkhcm.png',  'alt' => 'Bach Khoa Ho Chi Minh City Partner'],
+        ['key' => 'sus_uni_logo_5', 'img' => 'images/partner_nic.png',    'alt' => 'National Innovation Center NIC'],
+        ['key' => 'sus_uni_logo_6', 'img' => '',                          'alt' => 'Partner logo 6'],
+        ['key' => 'sus_uni_logo_7', 'img' => '',                          'alt' => 'Partner logo 7'],
+        ['key' => 'sus_uni_logo_8', 'img' => '',                          'alt' => 'Partner logo 8'],
+      ];
+    ?>
     <div class="biz-uni-grid">
-      <div class="biz-uni-card">
-        <img src="<?= asset('images/partner_hcmute.png') ?>" alt="HCMUTE University Partner">
+      <?php foreach ($uniLogos as $i => $logo):
+        $src = Setting::getOr($logo['key'], $logo['img']);
+        if ($src === 'none') $src = '';                       // admin chose "Ẩn ảnh này"
+        if ($src === '' && !Admin::check()) continue;        // empty slot: only an admin sees the placeholder
+      ?>
+      <div class="biz-uni-card<?= $src === '' ? ' live-empty-slot' : '' ?>">
+        <img src="<?= $src !== '' ? asset($src) : asset('images/favicon.png') ?>" alt="<?= e($logo['alt']) ?>"<?= lt_img_attr($logo['key'], 'Logo đối tác ' . ($i + 1)) ?> data-lt-hideable="1">
       </div>
-      <div class="biz-uni-card">
-        <img src="<?= asset('images/partner_uit.png') ?>" alt="UIT University Partner">
-      </div>
-      <div class="biz-uni-card">
-        <img src="<?= asset('images/partner_vgu.png') ?>" alt="Vietnamese-German University Partner">
-      </div>
-      <div class="biz-uni-card">
-        <img src="<?= asset('images/partner_bkhcm.png') ?>" alt="Bach Khoa Ho Chi Minh City Partner">
-      </div>
-      <div class="biz-uni-card">
-        <img src="<?= asset('images/partner_nic.png') ?>" alt="National Innovation Center NIC">
-      </div>
+      <?php endforeach; ?>
     </div>
 
   </div>

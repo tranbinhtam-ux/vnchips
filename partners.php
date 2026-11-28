@@ -35,12 +35,8 @@ require_once __DIR__ . '/includes/header.php';
         </ol>
       </nav>
 
-      <h1 style="font-family: var(--heading-font); font-size: 3.2rem; font-weight: 900; color: #FFFFFF; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 14px;">
-        OUR PARTNERS
-      </h1>
-      <p style="color: #CBD5E1; font-size: 1.15rem; max-width: 750px; line-height: 1.7; margin: 0;">
-        Collaborating with tier-1 foundries, leading EDA providers, and innovative fabless innovators to pioneer next-generation silicon tapeouts.
-      </p>
+      <h1 style="font-family: var(--heading-font); font-size: 3.2rem; font-weight: 900; color: #FFFFFF; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 14px;"<?= lt_attr('partners_hero_title', false, 'Tiêu đề Hero') ?>><?= lt('partners_hero_title', 'OUR PARTNERS') ?></h1>
+      <p style="color: #CBD5E1; font-size: 1.15rem; max-width: 750px; line-height: 1.7; margin: 0;"<?= lt_attr('partners_hero_subtitle', false, 'Mô tả Hero') ?>><?= lt('partners_hero_subtitle', 'Collaborating with tier-1 foundries, leading EDA providers, and innovative fabless innovators to pioneer next-generation silicon tapeouts.') ?></p>
     </div>
   </div>
 </section>
@@ -49,10 +45,10 @@ require_once __DIR__ . '/includes/header.php';
 <section class="partners-page-content" id="partnersContent" style="background-color: #FFFFFF; padding: 80px 0 100px; color: #1E293B;">
   <div class="container">
     <div class="partners-layout-grid" style="display: grid; grid-template-columns: 1fr 380px; gap: 50px; align-items: start;">
-      
+
       <!-- Left Column: Partners Cards Grid -->
       <div class="partners-main-col">
-        
+
         <?php foreach ($chunks as $index => $pageItems): ?>
           <?php $pageNum = $index + 1; ?>
           <div class="partner-page <?= ($pageNum === 1) ? 'active' : '' ?>" id="page-<?= $pageNum ?>">

@@ -287,5 +287,31 @@ if ($action === 'reset_program') {
     exit;
 }
 
+// ---------------------------------------------------------------------------
+// 7. Partners Projects on business.php (models/Project.php)
+// ---------------------------------------------------------------------------
+require_once __DIR__ . '/../../models/Project.php';
+
+if ($action === 'save_projects') {
+    $list = json_decode((string)($_POST['data'] ?? ''), true);
+    if (!is_array($list)) {
+        echo json_encode(['success' => false, 'error' => 'Dữ liệu gửi lên không hợp lệ.']);
+        exit;
+    }
+    $clean = Project::save($list);
+    if ($clean === false) {
+        echo json_encode(['success' => false, 'error' => 'Không lưu được danh sách dự án.']);
+        exit;
+    }
+    echo json_encode(['success' => true, 'message' => 'Đã lưu danh sách dự án!', 'projects' => $clean]);
+    exit;
+}
+
+if ($action === 'reset_projects') {
+    Project::reset();
+    echo json_encode(['success' => true, 'message' => 'Đã khôi phục danh sách dự án mặc định.']);
+    exit;
+}
+
 echo json_encode(['success' => false, 'error' => 'Hành động không hợp lệ (Unknown action).']);
 exit;

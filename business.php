@@ -10,8 +10,9 @@ require_once __DIR__ . '/models/Partner.php';
 // Success in Action carousel (managed in Admin > Partners)
 $successProjects = Partner::getPublished();
 
-// Partners Projects cards (data/projects.php)
-$projects = require __DIR__ . '/data/projects.php';
+// Partners Projects cards (models/Project.php: data/projects.php defaults + Live Edit override)
+require_once __DIR__ . '/models/Project.php';
+$projects = Project::all();
 
 $bizTechTitle = Setting::getOr('business_tech_title', 'TECHNOLOGY');
 
@@ -26,14 +27,14 @@ require_once __DIR__ . '/includes/header.php';
 <section class="biz-hero-section" style="background-image: url('<?= asset(Setting::getOr('hero_business', 'images/hero_chip_bg.webp')) ?>'); background-size: cover; background-position: center;">
   <div class="biz-hero-bg"></div>
   <div class="container biz-hero-content">
-    <h1 class="biz-hero-title">BUSINESS</h1>
+    <h1 class="biz-hero-title"<?= lt_attr('biz_hero_title', false, 'Tiêu đề Hero') ?>><?= lt('biz_hero_title', 'BUSINESS') ?></h1>
   </div>
 </section>
 
 <!-- 2. Services Section (White Background: Technology Card + Design & IP Services) -->
 <section class="biz-services-section" id="business-solutions">
   <div class="container">
-    
+
     <!-- Technology Capsule Card (Fully on white background below Hero banner) -->
     <div class="biz-tech-container" id="technology">
       <h2 class="biz-tech-title" id="live-biz-tech-title"><?= e($bizTechTitle) ?></h2>
@@ -42,7 +43,7 @@ require_once __DIR__ . '/includes/header.php';
       <?php else: ?>
       <div class="biz-tech-box" id="live-biz-tech-box">
         <div class="biz-tech-items">
-          
+
           <!-- Tech Item 1: Chiplet Disaggregation -->
           <a href="<?= url('technology.php#chiplet-disaggregation') ?>" class="biz-tech-item" title="Chiplet Disaggregation">
             <div class="biz-tech-icon">
@@ -89,14 +90,14 @@ require_once __DIR__ . '/includes/header.php';
   <div class="container" id="partners-projects">
 
     <div class="biz-rd-header">
-      <h2 class="biz-rd-title">PROJECTS</h2>
+      <h2 class="biz-rd-title"<?= lt_attr('biz_projects_title', false, 'Tiêu đề khối Projects') ?>><?= lt('biz_projects_title', 'PROJECTS') ?></h2>
       <div class="carousel-nav-arrows dark-arrows">
         <button class="nav-arrow-btn dark" aria-label="Previous Project"><i class="fa-solid fa-chevron-left"></i></button>
         <button class="nav-arrow-btn dark" aria-label="Next Project"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
     </div>
 
-    <div class="biz-project-track">
+    <div class="biz-project-track" id="live-biz-projects">
       <?php foreach ($projects as $project): ?>
         <div class="biz-project-card">
           <div class="biz-project-media">
@@ -118,11 +119,11 @@ require_once __DIR__ . '/includes/header.php';
 <!-- 5. Success in Action Section (Dark Navy) -->
 <section class="biz-success-section" id="success-in-action">
   <div class="container">
-    
+
     <div class="biz-success-header">
       <div>
-        <h2 class="biz-success-title">SUCCESS IN ACTION</h2>
-        <p class="biz-success-subtitle">Excellence in semiconductor design delivery through proven methodologies and technical innovation.</p>
+        <h2 class="biz-success-title"<?= lt_attr('biz_success_title', false, 'Tiêu đề Success in Action') ?>><?= lt('biz_success_title', 'SUCCESS IN ACTION') ?></h2>
+        <p class="biz-success-subtitle"<?= lt_attr('biz_success_subtitle', false, 'Mô tả Success in Action') ?>><?= lt('biz_success_subtitle', 'Excellence in semiconductor design delivery through proven methodologies and technical innovation.') ?></p>
       </div>
       <div class="carousel-nav-arrows">
         <button class="nav-arrow-btn" aria-label="Previous Slide"><i class="fa-solid fa-chevron-left"></i></button>

@@ -1111,6 +1111,44 @@ body.admin-edit-active .tuong-tac { outline: 1px dashed rgba(242, 91, 34, 0.45);
   background: linear-gradient(135deg, #16A34A 0%, #15803D 100%) !important;
 }
 body.admin-edit-active #live-program-detail.live-editable-wrap { position: relative; }
+
+/* ===================================================
+   LIVE TEXT / LIVE IMAGE pencils (any data-lt / data-lt-img element)
+   =================================================== */
+.live-lt-pen {
+  display: none;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #FFFFFF;
+  background: #F59E0B;
+  color: #FFFFFF;
+  font-size: 0.62rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  z-index: 60;
+  padding: 0;
+  line-height: 1;
+  transition: transform 0.15s, background 0.15s;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+.live-lt-pen--img { background: #0EA5E9; top: 8px; right: 8px; width: 26px; height: 26px; font-size: 0.72rem; }
+.live-lt-pen:hover { transform: scale(1.15); background: #F25B22; }
+body.admin-edit-active .live-lt, body.admin-edit-active .live-lt-img-wrap { position: relative; }
+body.admin-edit-active .live-lt-pen { display: inline-flex; }
+body.admin-edit-active .live-lt { outline: 1px dashed rgba(245, 158, 11, 0.55); outline-offset: 3px; }
+body.admin-edit-active .live-lt-img-wrap { outline: 1px dashed rgba(14, 165, 233, 0.6); outline-offset: 2px; }
+/* inline text slots (span inside a button/link) keep their flow */
+body.admin-edit-active span.live-lt { display: inline-block; }
+.live-edit-badge.badge-edit-tech-ai { top: 24px !important; right: 24px !important; }
+.live-edit-badge.badge-edit-biz-projects { top: -42px !important; right: 0 !important; background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important; }
 </style>
 
 <!-- 3. Modal Quick Edit: 3 Golden Stats -->
@@ -2101,6 +2139,9 @@ body.admin-edit-active #live-program-detail.live-editable-wrap { position: relat
       <button type="button" class="vnchip-tab-link" data-tab="tech-tab-interconnect" onclick="switchModalTab('modalLiveEditTechnology', 'tech-tab-interconnect')">
         <i class="fa-solid fa-network-wired"></i> 2. Interconnect Standards
       </button>
+      <button type="button" class="vnchip-tab-link" data-tab="tech-tab-ai" onclick="switchModalTab('modalLiveEditTechnology', 'tech-tab-ai')">
+        <i class="fa-solid fa-brain"></i> 3. AI-Centric SoC
+      </button>
     </div>
 
     <div class="vnchip-modal-body">
@@ -2122,6 +2163,16 @@ body.admin-edit-active #live-program-detail.live-editable-wrap { position: relat
               <i class="fa-solid fa-code me-1"></i> Mã HTML Khối High-Speed Interconnect Standards (UCIe, BoW)
             </div>
             <textarea id="inputLiveTechFeatures" name="section_tech_features" rows="8" class="vnchip-form-textarea"><?= htmlspecialchars(Setting::get('section_tech_features', ''), ENT_QUOTES, 'UTF-8') ?></textarea>
+          </div>
+        </div>
+
+        <!-- Tab 3: AI-Centric SoC Building -->
+        <div class="vnchip-tab-pane" id="tech-tab-ai">
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px;">
+            <div style="font-weight: 700; color: #7C3AED; font-size: 0.85rem; margin-bottom: 6px;">
+              <i class="fa-solid fa-code me-1"></i> Mã HTML Khối AI-Centric SoC Building (để trống = dùng nội dung mặc định)
+            </div>
+            <textarea id="inputLiveTechAi" name="section_tech_ai" rows="8" class="vnchip-form-textarea"><?= htmlspecialchars(Setting::get('section_tech_ai', ''), ENT_QUOTES, 'UTF-8') ?></textarea>
           </div>
         </div>
       </form>
@@ -2964,6 +3015,7 @@ function initLiveAceEditorsAll() {
   // 5. Technology Page
   initLiveAceEditor('inputLiveTechIntro', 240, 'Mã HTML Chiplet Disaggregation (section_tech_intro)');
   initLiveAceEditor('inputLiveTechFeatures', 240, 'Mã HTML Interconnect Standards (section_tech_features)');
+  initLiveAceEditor('inputLiveTechAi', 240, 'Mã HTML AI-Centric SoC Building (section_tech_ai)');
 }
 
 function resolveLiveAssetUrl(val) {
@@ -3559,6 +3611,18 @@ function removeLiveConductCardRow(idx) {
       techFeat.appendChild(badge);
     }
 
+    const techAi = document.querySelector('#ai-centric-soc');
+    if (techAi && !techAi.querySelector('.badge-edit-tech-ai')) {
+      techAi.classList.add('live-editable-wrap');
+      const badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'live-edit-badge badge-edit-tech-ai';
+      badge.innerHTML = '<i class="fa-solid fa-brain"></i> Sửa Khối AI-Centric SoC';
+      badge.title = 'Mã HTML khối AI-Centric SoC Building';
+      badge.onclick = (e) => { e.preventDefault(); e.stopPropagation(); openLiveModal('modalLiveEditTechnology', 'tech-tab-ai'); };
+      techAi.appendChild(badge);
+    }
+
     // 8. About Page Sections (about-us.php — 100% Every Section Live Editable!)
     // 8a. Overview / VNCHIP Journey Intro & Lobby
     const aboutOverview = document.getElementById('live-about-overview-container') || document.querySelector('.about-overview-section, #overview');
@@ -3663,6 +3727,23 @@ function removeLiveConductCardRow(idx) {
 
     // 9b. Per-item "Sửa mục" buttons + per-keyword tooltip pens (defined in the block below)
     if (window.vnLiveServices) window.vnLiveServices.inject();
+
+    // 9d. Partners Projects cards on business.php
+    const bizProjects = document.getElementById('live-biz-projects');
+    if (bizProjects && window.vnLiveProjects && !bizProjects.parentElement.querySelector('.badge-edit-biz-projects')) {
+      const host = bizProjects.parentElement;
+      host.classList.add('live-editable-wrap');
+      const badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'live-edit-badge badge-edit-biz-projects';
+      badge.innerHTML = '<i class="fa-solid fa-diagram-project"></i> Sửa danh sách Projects';
+      badge.title = 'Thêm/xoá/sắp xếp dự án, ảnh, tóm tắt và trang chi tiết';
+      badge.onclick = (e) => { e.preventDefault(); e.stopPropagation(); window.vnLiveProjects.open(); };
+      host.appendChild(badge);
+    }
+
+    // 9e. Live Text / Live Image pencils on every data-lt / data-lt-img element
+    if (window.vnLiveText) window.vnLiveText.inject();
 
     // 9c. Talent / Interns program page (program-detail.php)
     const progWrap = document.getElementById('live-program-detail');
@@ -5539,4 +5620,380 @@ function removeLiveConductCardRow(idx) {
 </script>
 <?php endif; ?>
 
+<!-- Live Text: one small editor for any element marked data-lt (see lt()/lt_attr() in includes/functions.php) -->
+<div class="vnchip-live-modal" id="modalLiveText" style="z-index: 10000050;">
+  <div class="vnchip-modal-backdrop" onclick="closeLiveModal('modalLiveText')"></div>
+  <div class="vnchip-modal-dialog" style="max-width: 720px;">
+    <div class="vnchip-modal-header">
+      <h5 class="vnchip-modal-title"><i class="fa-solid fa-i-cursor" style="color: #F59E0B;"></i> <span id="ltModalTitle">Sửa nội dung</span></h5>
+      <button type="button" class="vnchip-modal-close" onclick="closeLiveModal('modalLiveText')">&times;</button>
+    </div>
+    <div class="vnchip-modal-body">
+      <div class="vnchip-form-group" style="margin-bottom: 8px;">
+        <label class="vnchip-form-label" id="ltFieldLabel">Nội dung:</label>
+        <input type="text" id="ltInput" class="vnchip-form-input" style="display: none;">
+        <textarea id="ltTextarea" rows="4" class="vnchip-form-textarea" style="display: none;"></textarea>
+      </div>
+      <div style="font-size: 0.74rem; color: #94A3B8;" id="ltHint"></div>
+    </div>
+    <div class="vnchip-modal-footer">
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" id="btnLtReset" style="margin-right: auto; color: #B91C1C; border-color: #FECACA;" title="Bỏ nội dung đã sửa, quay về chữ gốc trong giao diện">
+        <i class="fa-solid fa-rotate-left"></i> Về mặc định
+      </button>
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" onclick="closeLiveModal('modalLiveText')">Hủy bỏ</button>
+      <button type="button" class="vnchip-btn vnchip-btn-primary" id="btnLtSave" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+        <i class="fa-solid fa-floppy-disk"></i> Lưu
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Live Image: replace any element marked data-lt-img -->
+<div class="vnchip-live-modal" id="modalLiveImage" style="z-index: 10000050;">
+  <div class="vnchip-modal-backdrop" onclick="closeLiveModal('modalLiveImage')"></div>
+  <div class="vnchip-modal-dialog" style="max-width: 640px;">
+    <div class="vnchip-modal-header">
+      <h5 class="vnchip-modal-title"><i class="fa-solid fa-image" style="color: #F59E0B;"></i> <span id="liModalTitle">Đổi ảnh</span></h5>
+      <button type="button" class="vnchip-modal-close" onclick="closeLiveModal('modalLiveImage')">&times;</button>
+    </div>
+    <div class="vnchip-modal-body">
+      <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+        <img id="liPreview" src="" alt="" style="width: 220px; height: 130px; object-fit: contain; background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 10px;">
+        <div style="flex: 1; min-width: 220px;">
+          <input type="file" id="liFile" accept="image/*" style="display: none;">
+          <button type="button" class="vnchip-btn vnchip-btn-primary" onclick="document.getElementById('liFile').click()" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Tải ảnh mới lên
+          </button>
+          <span id="liStatus" style="font-size: 0.78rem; margin-left: 8px;"></span>
+          <label class="vnchip-form-label" style="margin-top: 10px;">Hoặc đường dẫn ảnh:</label>
+          <input type="text" id="liPath" class="vnchip-form-input" style="font-family: monospace; font-size: 0.78rem;" placeholder="uploads/media/....webp">
+        </div>
+      </div>
+    </div>
+    <div class="vnchip-modal-footer">
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" id="btnLiHide" style="margin-right: 6px; color: #B91C1C; border-color: #FECACA; display: none;"><i class="fa-solid fa-eye-slash"></i> Ẩn ảnh này</button>
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" id="btnLiReset" style="margin-right: auto; color: #B91C1C; border-color: #FECACA;"><i class="fa-solid fa-rotate-left"></i> Về ảnh gốc</button>
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" onclick="closeLiveModal('modalLiveImage')">Hủy bỏ</button>
+      <button type="button" class="vnchip-btn vnchip-btn-primary" id="btnLiSave" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * Live Text / Live Image layer.
+ * Any element carrying data-lt="setting_key" gets a pencil in edit mode; saving writes the
+ * setting and updates the element in place. data-lt-html="1" edits HTML, data-lt-attr="href"
+ * edits an attribute instead of the text. data-lt-img="setting_key" does the same for images.
+ */
+(function () {
+  const AJAX = '<?= admin_url("ajax/live-edit.php") ?>';
+  const BASE = '<?= absolute_url() ?>';
+  let cur = null;      // element being edited
+  let curImg = null;
+
+  function toast(msg, ok = true) {
+    const t = document.getElementById('live-edit-toast'), tx = document.getElementById('live-edit-toast-text');
+    if (!t || !tx) return;
+    tx.innerText = msg; t.style.borderLeftColor = ok ? '#10B981' : '#F59E0B'; t.style.display = 'inline-flex';
+    clearTimeout(t._timer); t._timer = setTimeout(() => { t.style.display = 'none'; }, 3500);
+  }
+  function post(data) {
+    const fd = new FormData(); Object.keys(data).forEach(k => fd.append(k, data[k]));
+    return fetch(AJAX, { method: 'POST', body: fd }).then(r => r.json());
+  }
+  function penFor(el) { return [...el.children].find(c => c.classList && c.classList.contains('live-lt-pen')); }
+  function currentValue(el) {
+    const attr = el.dataset.ltAttr;
+    if (attr) return el.getAttribute(attr) || '';
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll('.live-lt-pen').forEach(p => p.remove());
+    return el.dataset.ltHtml ? clone.innerHTML.trim() : clone.textContent.replace(/\s+/g, ' ').trim();
+  }
+  function applyValue(el, val) {
+    const attr = el.dataset.ltAttr;
+    if (attr) { el.setAttribute(attr, val); return; }
+    const pen = penFor(el);
+    if (pen) pen.remove();
+    if (el.dataset.ltHtml) el.innerHTML = val; else el.textContent = val;
+    if (pen) el.appendChild(pen);
+  }
+
+  function inject() {
+    document.querySelectorAll('[data-lt]').forEach(el => {
+      if (el.dataset.ltBound) return;
+      el.dataset.ltBound = '1';
+      el.classList.add('live-lt');
+      const pen = document.createElement('button');
+      pen.type = 'button';
+      pen.className = 'live-lt-pen';
+      pen.innerHTML = '<i class="fa-solid fa-pen"></i>';
+      pen.title = 'Sửa: ' + (el.dataset.ltLabel || el.dataset.lt);
+      pen.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); openText(el); });
+      el.appendChild(pen);
+    });
+    document.querySelectorAll('[data-lt-img]').forEach(img => {
+      if (img.dataset.ltBound) return;
+      img.dataset.ltBound = '1';
+      const host = img.tagName === 'IMG' ? img.parentElement : img;
+      if (!host) return;
+      host.classList.add('live-lt-img-wrap');
+      const pen = document.createElement('button');
+      pen.type = 'button';
+      pen.className = 'live-lt-pen live-lt-pen--img';
+      pen.innerHTML = '<i class="fa-solid fa-image"></i>';
+      pen.title = 'Đổi ảnh: ' + (img.dataset.ltLabel || img.dataset.ltImg);
+      pen.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); openImage(img); });
+      host.appendChild(pen);
+    });
+  }
+
+  // ---------------- text ----------------
+  function openText(el) {
+    cur = el;
+    const html = !!el.dataset.ltHtml, attr = el.dataset.ltAttr;
+    const val = currentValue(el);
+    const useArea = html || val.length > 70 || val.indexOf('\n') !== -1;
+    document.getElementById('ltModalTitle').innerText = el.dataset.ltLabel || 'Sửa nội dung';
+    document.getElementById('ltFieldLabel').innerText = attr ? ('Giá trị ' + attr + ':') : (html ? 'Nội dung (HTML):' : 'Nội dung:');
+    const inp = document.getElementById('ltInput'), ta = document.getElementById('ltTextarea');
+    inp.style.display = useArea ? 'none' : ''; ta.style.display = useArea ? '' : 'none';
+    ta.rows = html ? 10 : 4;
+    ta.style.fontFamily = html ? 'monospace' : '';
+    if (useArea) ta.value = val; else inp.value = val;
+    document.getElementById('ltHint').innerText = 'Khoá: ' + el.dataset.lt + (html ? ' · Cho phép HTML (p, b, br, a...)' : '');
+    openLiveModal('modalLiveText');
+    setTimeout(() => (useArea ? ta : inp).focus(), 80);
+  }
+  function saveText() {
+    if (!cur) return;
+    const btn = document.getElementById('btnLtSave');
+    const inp = document.getElementById('ltInput'), ta = document.getElementById('ltTextarea');
+    const val = (inp.style.display === 'none' ? ta.value : inp.value).trim();
+    btn.disabled = true;
+    post({ action: 'save_setting', key: cur.dataset.lt, value: val }).then(res => {
+      btn.disabled = false;
+      if (!res.success) { alert(res.error || 'Lỗi khi lưu.'); return; }
+      // every element bound to the same key gets the new value
+      document.querySelectorAll('[data-lt="' + cur.dataset.lt + '"]').forEach(el => applyValue(el, val));
+      closeLiveModal('modalLiveText');
+      toast('✓ Đã lưu');
+    }).catch(err => { btn.disabled = false; alert('Lỗi kết nối máy chủ: ' + err); });
+  }
+  function resetText() {
+    if (!cur || !confirm('Quay về chữ gốc trong giao diện cho mục này?')) return;
+    post({ action: 'reset_section', key: cur.dataset.lt }).then(res => {
+      if (!res.success) { alert(res.error || 'Không khôi phục được.'); return; }
+      toast('✓ Đã về mặc định, đang tải lại...'); setTimeout(() => location.reload(), 500);
+    });
+  }
+
+  // ---------------- image ----------------
+  function srcOf(img) {
+    if (img.tagName === 'IMG') return img.getAttribute('src') || '';
+    const m = (img.style.backgroundImage || '').match(/url\(["']?(.*?)["']?\)/);
+    return m ? m[1] : '';
+  }
+  function setSrc(img, url) {
+    if (img.tagName === 'IMG') img.src = url; else img.style.backgroundImage = "url('" + url + "')";
+  }
+  function openImage(img) {
+    curImg = img;
+    document.getElementById('liModalTitle').innerText = img.dataset.ltLabel || 'Đổi ảnh';
+    document.getElementById('liPreview').src = srcOf(img);
+    document.getElementById('liPath').value = '';
+    document.getElementById('liStatus').innerHTML = '';
+    document.getElementById('btnLiHide').style.display = img.dataset.ltHideable ? '' : 'none';
+    openLiveModal('modalLiveImage');
+  }
+  function uploadImage(input) {
+    if (!input.files || !input.files[0] || !curImg) return;
+    const status = document.getElementById('liStatus');
+    status.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải lên...';
+    const fd = new FormData();
+    fd.append('action', 'upload_image'); fd.append('image', input.files[0]);
+    fd.append('subdir', 'media'); fd.append('prefix', 'live'); fd.append('setting_key', curImg.dataset.ltImg);
+    fetch(AJAX, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+      if (!res.success) { status.innerHTML = ''; alert(res.error || 'Lỗi tải ảnh.'); return; }
+      document.getElementById('liPreview').src = res.full_url;
+      document.getElementById('liPath').value = res.path;
+      document.querySelectorAll('[data-lt-img="' + curImg.dataset.ltImg + '"]').forEach(el => { setSrc(el, res.full_url); el.closest('.live-empty-slot') && el.closest('.live-empty-slot').classList.remove('live-empty-slot'); });
+      status.innerHTML = '<span style="color:#16A34A;font-weight:700;"><i class="fa-solid fa-circle-check"></i> Đã thay ảnh</span>';
+      toast('✓ Đã tải ảnh lên và thay thế');
+    }).catch(err => { status.innerHTML = ''; alert('Lỗi kết nối máy chủ: ' + err); });
+    input.value = '';
+  }
+  function saveImagePath() {
+    if (!curImg) return;
+    const path = document.getElementById('liPath').value.trim();
+    if (!path) { closeLiveModal('modalLiveImage'); return; }
+    post({ action: 'save_setting', key: curImg.dataset.ltImg, value: path }).then(res => {
+      if (!res.success) { alert(res.error || 'Lỗi khi lưu.'); return; }
+      const url = /^https?:\/\//.test(path) ? path : BASE + path.replace(/^\//, '').replace(/^assets\//, 'assets/');
+      document.querySelectorAll('[data-lt-img="' + curImg.dataset.ltImg + '"]').forEach(el => setSrc(el, url));
+      closeLiveModal('modalLiveImage'); toast('✓ Đã lưu đường dẫn ảnh');
+    });
+  }
+  function hideImage() {
+    if (!curImg || !confirm('Ẩn ảnh này khỏi trang?')) return;
+    post({ action: 'save_setting', key: curImg.dataset.ltImg, value: 'none' }).then(res => {
+      if (!res.success) { alert(res.error || 'Lỗi khi lưu.'); return; }
+      toast('✓ Đã ẩn, đang tải lại...'); setTimeout(() => location.reload(), 500);
+    });
+  }
+  function resetImage() {
+    if (!curImg || !confirm('Quay về ảnh gốc của giao diện?')) return;
+    post({ action: 'reset_section', key: curImg.dataset.ltImg }).then(res => {
+      if (!res.success) { alert(res.error || 'Không khôi phục được.'); return; }
+      toast('✓ Đã về ảnh gốc, đang tải lại...'); setTimeout(() => location.reload(), 500);
+    });
+  }
+
+  function bind() {
+    const once = (id, ev, fn) => { const el = document.getElementById(id); if (el && !el._ltBound) { el._ltBound = true; el.addEventListener(ev, fn); } };
+    once('btnLtSave', 'click', saveText);
+    once('btnLtReset', 'click', resetText);
+    once('liFile', 'change', function () { uploadImage(this); });
+    once('btnLiSave', 'click', saveImagePath);
+    once('btnLiHide', 'click', hideImage);
+    once('btnLiReset', 'click', resetImage);
+    once('ltTextarea', 'keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') saveText(); });
+    once('ltInput', 'keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveText(); } });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
+  window.vnLiveText = { inject, openText, openImage };
+})();
+</script>
+
+<?php if (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'business.php'):
+  require_once __DIR__ . '/../models/Project.php';
+  $liveProjects = Project::all();
+?>
+<!-- Live Edit: Partners Projects cards on business.php -->
+<div class="vnchip-live-modal" id="modalLiveEditProjects">
+  <div class="vnchip-modal-backdrop" onclick="closeLiveModal('modalLiveEditProjects')"></div>
+  <div class="vnchip-modal-dialog" style="max-width: 940px;">
+    <div class="vnchip-modal-header">
+      <h5 class="vnchip-modal-title"><i class="fa-solid fa-diagram-project" style="color: #2563EB;"></i> Sửa danh sách Projects</h5>
+      <button type="button" class="vnchip-modal-close" onclick="closeLiveModal('modalLiveEditProjects')">&times;</button>
+    </div>
+    <div class="vnchip-modal-body">
+      <div style="font-size: 0.8rem; color: #64748B; margin-bottom: 10px;">Mỗi dự án là một thẻ trong khối PROJECTS và có trang riêng project-detail.php?slug=… Phần “Nội dung trang chi tiết” là HTML (tiêu đề h3.biz-rd-subtitle, danh sách ul.biz-rd-points…).</div>
+      <div class="vnchip-repeater-list" id="projList"></div>
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" style="margin-top: 10px;" onclick="vnLiveProjects.add()"><i class="fa-solid fa-plus"></i> Thêm dự án</button>
+    </div>
+    <div class="vnchip-modal-footer">
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" id="btnResetProjects" style="margin-right: auto; color: #B91C1C; border-color: #FECACA;<?= Project::isCustomised() ? '' : ' display:none;' ?>"><i class="fa-solid fa-rotate-left"></i> Khôi phục mặc định</button>
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" onclick="closeLiveModal('modalLiveEditProjects')">Hủy bỏ</button>
+      <button type="button" class="vnchip-btn vnchip-btn-primary" id="btnSaveProjects" style="background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);"><i class="fa-solid fa-floppy-disk"></i> Lưu danh sách dự án</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const AJAX = '<?= admin_url("ajax/live-edit.php") ?>';
+  const BASE = '<?= absolute_url() ?>';
+  const data = <?= json_encode($liveProjects, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;
+  const esc = s => { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML.replace(/"/g, '&quot;'); };
+  const imgSrc = p => !p ? '' : (/^https?:\/\//.test(p) ? p : BASE + (p.indexOf('uploads/') === 0 ? p : 'assets/' + p.replace(/^assets\//, '')));
+  function toast(msg, ok = true) {
+    const t = document.getElementById('live-edit-toast'), tx = document.getElementById('live-edit-toast-text');
+    if (!t || !tx) return;
+    tx.innerText = msg; t.style.borderLeftColor = ok ? '#10B981' : '#F59E0B'; t.style.display = 'inline-flex';
+    clearTimeout(t._timer); t._timer = setTimeout(() => { t.style.display = 'none'; }, 3500);
+  }
+
+  function render() {
+    const list = document.getElementById('projList');
+    list.innerHTML = '';
+    data.forEach((p, i) => {
+      const row = document.createElement('div');
+      row.className = 'vnchip-repeater-item';
+      row.innerHTML = `
+        <div class="vnchip-repeater-head">
+          <span class="vnchip-repeater-num">Dự án ${i + 1}</span>
+          <span class="vnchip-repeater-actions">
+            <button type="button" class="vnchip-mini-btn" onclick="vnLiveProjects.move(${i}, -1)"><i class="fa-solid fa-arrow-up"></i></button>
+            <button type="button" class="vnchip-mini-btn" onclick="vnLiveProjects.move(${i}, 1)"><i class="fa-solid fa-arrow-down"></i></button>
+            <button type="button" class="vnchip-mini-btn danger" onclick="vnLiveProjects.remove(${i})"><i class="fa-solid fa-trash"></i> Xoá</button>
+          </span>
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;">
+          <div style="flex:none;width:170px;">
+            <img class="pj-img-preview" src="${esc(imgSrc(p.image))}" alt="" style="width:170px;height:110px;object-fit:cover;border-radius:8px;border:1px solid #CBD5E1;background:#F1F5F9;display:block;">
+            <input type="file" accept="image/*" style="display:none;" class="pj-img-file" onchange="vnLiveProjects.upload(this)">
+            <button type="button" class="vnchip-mini-btn" style="margin-top:6px;width:100%;justify-content:center;" onclick="this.previousElementSibling.click()"><i class="fa-solid fa-cloud-arrow-up"></i> Đổi ảnh</button>
+            <input type="text" class="vnchip-form-input pj-img" value="${esc(p.image || '')}" style="font-size:0.72rem;font-family:monospace;margin-top:6px;padding:5px 8px;" placeholder="images/... hoặc uploads/...">
+          </div>
+          <div style="flex:1;min-width:260px;display:grid;gap:8px;">
+            <div><label class="vnchip-form-label">Tên dự án</label><input type="text" class="vnchip-form-input pj-title" value="${esc(p.title || '')}"></div>
+            <div><label class="vnchip-form-label">Tiêu đề phụ</label><input type="text" class="vnchip-form-input pj-subtitle" value="${esc(p.subtitle || '')}"></div>
+            <div><label class="vnchip-form-label">Slug (đường dẫn, để trống sẽ tự tạo từ tên)</label><input type="text" class="vnchip-form-input pj-slug" value="${esc(p.slug || '')}" style="font-family:monospace;font-size:0.8rem;"></div>
+            <div><label class="vnchip-form-label">Tóm tắt (hiện trên thẻ và đầu trang chi tiết)</label><textarea class="vnchip-form-textarea pj-summary" rows="3">${esc(p.summary || '')}</textarea></div>
+            <div><label class="vnchip-form-label">Nội dung trang chi tiết (HTML)</label><textarea class="vnchip-form-textarea pj-content" rows="8" style="font-family:monospace;font-size:0.78rem;">${esc(p.content || '')}</textarea></div>
+          </div>
+        </div>`;
+      list.appendChild(row);
+    });
+    if (!data.length) list.innerHTML = '<div style="font-size:0.8rem;color:#64748B;">Chưa có dự án nào — khối PROJECTS sẽ trống.</div>';
+  }
+  function collect() {
+    const rows = document.querySelectorAll('#projList .vnchip-repeater-item');
+    data.length = 0;
+    rows.forEach(r => data.push({
+      image: r.querySelector('.pj-img').value.trim(),
+      title: r.querySelector('.pj-title').value.trim(),
+      subtitle: r.querySelector('.pj-subtitle').value.trim(),
+      slug: r.querySelector('.pj-slug').value.trim(),
+      summary: r.querySelector('.pj-summary').value.trim(),
+      content: r.querySelector('.pj-content').value.trim()
+    }));
+  }
+  window.vnLiveProjects = {
+    open() { render(); openLiveModal('modalLiveEditProjects'); },
+    add() { collect(); data.push({ image: '', title: '', subtitle: '', slug: '', summary: '', content: '' }); render(); },
+    remove(i) { collect(); if (!confirm('Xoá dự án "' + (data[i].title || i + 1) + '"?')) return; data.splice(i, 1); render(); },
+    move(i, d) { collect(); const j = i + d; if (j < 0 || j >= data.length) return; [data[i], data[j]] = [data[j], data[i]]; render(); },
+    upload(input) {
+      if (!input.files || !input.files[0]) return;
+      const row = input.closest('.vnchip-repeater-item');
+      const fd = new FormData();
+      fd.append('action', 'upload_image'); fd.append('image', input.files[0]); fd.append('subdir', 'media'); fd.append('prefix', 'project');
+      fetch(AJAX, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+        if (!res.success) { alert(res.error || 'Lỗi tải ảnh.'); return; }
+        row.querySelector('.pj-img').value = res.path;
+        row.querySelector('.pj-img-preview').src = res.full_url;
+        toast('✓ Đã tải ảnh lên, bấm Lưu để áp dụng');
+      });
+      input.value = '';
+    }
+  };
+  function save() {
+    collect();
+    const btn = document.getElementById('btnSaveProjects');
+    btn.disabled = true;
+    const fd = new FormData(); fd.append('action', 'save_projects'); fd.append('data', JSON.stringify(data));
+    fetch(AJAX, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+      btn.disabled = false;
+      if (!res.success) { alert(res.error || 'Lỗi khi lưu.'); return; }
+      toast('✓ Đã lưu, đang tải lại...'); setTimeout(() => location.reload(), 600);
+    }).catch(err => { btn.disabled = false; alert('Lỗi kết nối máy chủ: ' + err); });
+  }
+  function reset() {
+    if (!confirm('Khôi phục danh sách dự án mặc định? Mọi dự án đã thêm/sửa sẽ bị bỏ.')) return;
+    const fd = new FormData(); fd.append('action', 'reset_projects');
+    fetch(AJAX, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+      if (!res.success) { alert(res.error || 'Không khôi phục được.'); return; }
+      toast('✓ Đã khôi phục, đang tải lại...'); setTimeout(() => location.reload(), 600);
+    });
+  }
+  function bind() {
+    document.getElementById('btnSaveProjects').addEventListener('click', save);
+    document.getElementById('btnResetProjects').addEventListener('click', reset);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
+})();
+</script>
+<?php endif; ?>
 
