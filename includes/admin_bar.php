@@ -10,6 +10,7 @@ if (!defined('VNCHIP_APP')) {
 
 require_once __DIR__ . '/../models/Admin.php';
 require_once __DIR__ . '/../models/Setting.php';
+require_once __DIR__ . '/../models/Program.php';
 
 // Only execute for logged-in administrators
 if (!Admin::check()) {
@@ -1103,6 +1104,13 @@ body.admin-edit-active .tuong-tac { outline: 1px dashed rgba(242, 91, 34, 0.45);
 #modalLiveEditTooltip { z-index: 10000000; }
 #modalLiveEditServiceItem .vnchip-modal-body, #modalLiveEditTooltip .vnchip-modal-body { max-height: 80vh; }
 .svc-img-thumb { width: 160px; height: 90px; border-radius: 10px; object-fit: cover; background: #0A1120; border: 1px solid #334155; flex: none; }
+
+.live-edit-badge.badge-edit-program {
+  top: 0px !important;
+  right: 0px !important;
+  background: linear-gradient(135deg, #16A34A 0%, #15803D 100%) !important;
+}
+body.admin-edit-active #live-program-detail.live-editable-wrap { position: relative; }
 </style>
 
 <!-- 3. Modal Quick Edit: 3 Golden Stats -->
@@ -3656,6 +3664,19 @@ function removeLiveConductCardRow(idx) {
     // 9b. Per-item "Sửa mục" buttons + per-keyword tooltip pens (defined in the block below)
     if (window.vnLiveServices) window.vnLiveServices.inject();
 
+    // 9c. Talent / Interns program page (program-detail.php)
+    const progWrap = document.getElementById('live-program-detail');
+    if (progWrap && window.vnLiveProgram && !progWrap.querySelector('.badge-edit-program')) {
+      progWrap.classList.add('live-editable-wrap');
+      const badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'live-edit-badge badge-edit-program';
+      badge.innerHTML = '<i class="fa-solid fa-graduation-cap"></i> Sửa trang chương trình';
+      badge.title = 'Tên, nhãn, giới thiệu, học phần, các bước và link Apply';
+      badge.onclick = (e) => { e.preventDefault(); e.stopPropagation(); window.vnLiveProgram.open(); };
+      progWrap.appendChild(badge);
+    }
+
     // 10. Call to Action Banner (All pages)
     const ctaTarget = document.querySelector('#live-cta-box, .cta-box-new, #global-cta-section, .cta-section-new');
     if (ctaTarget && !ctaTarget.querySelector('.badge-edit-cta')) {
@@ -5238,4 +5259,284 @@ function removeLiveConductCardRow(idx) {
   window.vnLiveServices = { inject, openItem, openTip };
 })();
 </script>
+<?php if (!empty($liveProgramKey) && Program::isValidKey($liveProgramKey)):
+  $liveProgram = Program::get($liveProgramKey);
+  $liveProgramApply = Setting::get('program_' . $liveProgramKey . '_apply_url', '');
+?>
+<!-- Live Edit: Talent / Interns program page -->
+<div class="vnchip-live-modal" id="modalLiveEditProgram">
+  <div class="vnchip-modal-backdrop" onclick="closeLiveModal('modalLiveEditProgram')"></div>
+  <div class="vnchip-modal-dialog" style="max-width: 920px;">
+    <div class="vnchip-modal-header">
+      <h5 class="vnchip-modal-title">
+        <i class="fa-solid fa-graduation-cap" style="color: #16A34A;"></i> Sửa trang <?= e($liveProgram['title']) ?>
+      </h5>
+      <button type="button" class="vnchip-modal-close" onclick="closeLiveModal('modalLiveEditProgram')">&times;</button>
+    </div>
+
+    <div class="vnchip-modal-tabs">
+      <button type="button" class="vnchip-tab-link active" data-tab="prog-tab-info" onclick="switchModalTab('modalLiveEditProgram', 'prog-tab-info')"><i class="fa-solid fa-align-left me-1"></i> Giới thiệu</button>
+      <button type="button" class="vnchip-tab-link" data-tab="prog-tab-extra" onclick="switchModalTab('modalLiveEditProgram', 'prog-tab-extra')"><i class="fa-solid fa-table-cells-large me-1"></i> <?= $liveProgramKey === 'talent' ? 'Khối học phần' : 'Khung thông báo' ?></button>
+      <button type="button" class="vnchip-tab-link" data-tab="prog-tab-steps" onclick="switchModalTab('modalLiveEditProgram', 'prog-tab-steps')"><i class="fa-solid fa-list-ol me-1"></i> Các bước <span class="prog-steps-count"></span></button>
+      <button type="button" class="vnchip-tab-link" data-tab="prog-tab-apply" onclick="switchModalTab('modalLiveEditProgram', 'prog-tab-apply')"><i class="fa-solid fa-paper-plane me-1"></i> Nút Apply</button>
+    </div>
+
+    <div class="vnchip-modal-body">
+      <div class="vnchip-tab-pane active" id="prog-tab-info">
+        <div class="vnchip-form-group">
+          <label class="vnchip-form-label">Tên chương trình (tiêu đề trang):</label>
+          <input type="text" id="progTitle" class="vnchip-form-input" style="font-weight: 800; font-size: 1rem;">
+        </div>
+        <div class="vnchip-form-group">
+          <label class="vnchip-form-label">Nhãn (badge) dưới tiêu đề <span style="color:#94A3B8;font-weight:400;">— VD: 35–50 participants / year · 3 months</span>:</label>
+          <input type="text" id="progBadge" class="vnchip-form-input">
+        </div>
+        <div class="vnchip-form-group">
+          <label class="vnchip-form-label">Câu mô tả ngắn (in đậm):</label>
+          <textarea id="progSubtitle" rows="2" class="vnchip-form-textarea"></textarea>
+        </div>
+        <div class="vnchip-form-group">
+          <label class="vnchip-form-label">Đoạn giới thiệu <span style="color:#94A3B8;font-weight:400;">— mỗi đoạn cách nhau một dòng trống</span>:</label>
+          <textarea id="progDesc" rows="8" class="vnchip-form-textarea"></textarea>
+        </div>
+        <div class="vnchip-form-group" style="margin-bottom:0;">
+          <label class="vnchip-form-label">Chữ trước “Process” ở tiêu đề quy trình <span style="color:#94A3B8;font-weight:400;">— VD: Selection, Recruitment</span>:</label>
+          <input type="text" id="progProcess" class="vnchip-form-input" style="max-width: 320px;">
+        </div>
+      </div>
+
+      <div class="vnchip-tab-pane" id="prog-tab-extra">
+        <?php if ($liveProgramKey === 'talent'): ?>
+          <div style="font-size:0.8rem;color:#64748B;margin-bottom:10px;">Ba thẻ học phần với icon, tên và số giờ. Icon dùng tên Font Awesome (VD: fa-microchip, fa-user-tie, fa-people-group, fa-code, fa-chart-line).</div>
+          <div class="vnchip-repeater-list" id="progModules"></div>
+          <button type="button" class="vnchip-btn vnchip-btn-secondary" style="margin-top:10px;" onclick="vnLiveProgram.addModule()"><i class="fa-solid fa-plus"></i> Thêm học phần</button>
+        <?php else: ?>
+          <div class="vnchip-form-group">
+            <label class="vnchip-form-label">Tiêu đề khung thông báo:</label>
+            <input type="text" id="progAnnTitle" class="vnchip-form-input">
+          </div>
+          <div class="vnchip-form-group" style="margin-bottom:0;">
+            <label class="vnchip-form-label">Nội dung khung thông báo <span style="color:#94A3B8;font-weight:400;">— để trống cả hai để ẩn khung</span>:</label>
+            <textarea id="progAnnDesc" rows="3" class="vnchip-form-textarea"></textarea>
+          </div>
+        <?php endif; ?>
+      </div>
+
+      <div class="vnchip-tab-pane" id="prog-tab-steps">
+        <div style="font-size:0.8rem;color:#64748B;margin-bottom:10px;">Mỗi bước có ảnh, tiêu đề và các gạch đầu dòng (mỗi dòng một ý). Dùng mũi tên để đổi thứ tự.</div>
+        <div class="vnchip-repeater-list" id="progSteps"></div>
+        <button type="button" class="vnchip-btn vnchip-btn-secondary" style="margin-top:10px;" onclick="vnLiveProgram.addStep()"><i class="fa-solid fa-plus"></i> Thêm bước</button>
+      </div>
+
+      <div class="vnchip-tab-pane" id="prog-tab-apply">
+        <div class="vnchip-form-group" style="margin-bottom:0;">
+          <label class="vnchip-form-label">Link nút Apply:</label>
+          <input type="text" id="progApplyUrl" class="vnchip-form-input" value="<?= e($liveProgramApply) ?>" placeholder="https://forms.gle/... hoặc talk-to-us.php">
+          <div style="font-size:0.76rem;color:#64748B;margin-top:6px;">Link ngoài (https://...) mở tab mới. Để trống sẽ dẫn tới trang Talk To Us.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vnchip-modal-footer">
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" style="margin-right:auto;color:#B91C1C;border-color:#FECACA;" id="btnResetProgram" title="Bỏ mọi chỉnh sửa, quay về nội dung gốc của trang">
+        <i class="fa-solid fa-rotate-left"></i> Khôi phục mặc định
+      </button>
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" onclick="closeLiveModal('modalLiveEditProgram')">Hủy bỏ</button>
+      <button type="button" class="vnchip-btn vnchip-btn-primary" id="btnSaveProgram" style="background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);">
+        <i class="fa-solid fa-floppy-disk"></i> Lưu trang chương trình
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const AJAX = '<?= admin_url("ajax/live-edit.php") ?>';
+  const KEY = <?= json_encode($liveProgramKey) ?>;
+  const IS_TALENT = KEY === 'talent';
+  const data = <?= json_encode($liveProgram, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;
+  const IMG_BASE = '<?= asset('images/programs/') ?>';
+  const SITE_BASE = '<?= absolute_url() ?>';
+  const CUSTOMISED = <?= Program::isCustomised($liveProgramKey) ? 'true' : 'false' ?>;
+
+  // textContent, not innerText: innerText would turn the newlines between bullet points into <br>
+  const esc = s => { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML.replace(/"/g, '&quot;'); };
+  const imgSrc = img => !img ? '' : (/^https?:\/\//.test(img) ? img : (img.indexOf('/') === -1 ? IMG_BASE + img : SITE_BASE + img));
+  function toast(msg, ok = true) {
+    const t = document.getElementById('live-edit-toast'), tx = document.getElementById('live-edit-toast-text');
+    if (!t || !tx) return;
+    tx.innerText = msg; t.style.borderLeftColor = ok ? '#10B981' : '#F59E0B'; t.style.display = 'inline-flex';
+    clearTimeout(t._timer); t._timer = setTimeout(() => { t.style.display = 'none'; }, 3500);
+  }
+
+  // ---------- form <-> data ----------
+  function fill() {
+    document.getElementById('progTitle').value = data.title || '';
+    document.getElementById('progBadge').value = data.badge || '';
+    document.getElementById('progSubtitle').value = data.subtitle || '';
+    document.getElementById('progDesc').value = (data.desc || []).join('\n\n');
+    document.getElementById('progProcess').value = data.process || '';
+    if (IS_TALENT) renderModules(); else {
+      document.getElementById('progAnnTitle').value = (data.announcement || {}).title || '';
+      document.getElementById('progAnnDesc').value = (data.announcement || {}).desc || '';
+    }
+    renderSteps();
+    document.getElementById('btnResetProgram').style.display = CUSTOMISED ? '' : 'none';
+  }
+
+  function collect() {
+    collectSteps(); if (IS_TALENT) collectModules();
+    const out = {
+      title: document.getElementById('progTitle').value.trim(),
+      badge: document.getElementById('progBadge').value.trim(),
+      subtitle: document.getElementById('progSubtitle').value.trim(),
+      desc: document.getElementById('progDesc').value.split(/\n\s*\n/).map(s => s.replace(/\s*\n\s*/g, ' ').trim()).filter(Boolean),
+      process: document.getElementById('progProcess').value.trim(),
+      steps: data.steps
+    };
+    if (IS_TALENT) out.modules = data.modules;
+    else out.announcement = { title: document.getElementById('progAnnTitle').value.trim(), desc: document.getElementById('progAnnDesc').value.trim() };
+    return out;
+  }
+
+  // ---------- modules repeater (talent) ----------
+  function renderModules() {
+    const list = document.getElementById('progModules'); if (!list) return;
+    list.innerHTML = '';
+    (data.modules || []).forEach((m, i) => {
+      const row = document.createElement('div');
+      row.className = 'vnchip-repeater-item';
+      row.innerHTML = `
+        <div class="vnchip-repeater-head">
+          <span class="vnchip-repeater-num"><i class="fa-solid ${esc(m.icon || 'fa-microchip')}" style="color:#16A34A;margin-right:6px;"></i>Học phần ${i + 1}</span>
+          <span class="vnchip-repeater-actions">
+            <button type="button" class="vnchip-mini-btn" onclick="vnLiveProgram.moveModule(${i}, -1)" title="Lên"><i class="fa-solid fa-arrow-up"></i></button>
+            <button type="button" class="vnchip-mini-btn" onclick="vnLiveProgram.moveModule(${i}, 1)" title="Xuống"><i class="fa-solid fa-arrow-down"></i></button>
+            <button type="button" class="vnchip-mini-btn danger" onclick="vnLiveProgram.removeModule(${i})" title="Xoá"><i class="fa-solid fa-trash"></i></button>
+          </span>
+        </div>
+        <div style="display:grid;grid-template-columns:150px 1fr 120px;gap:10px;">
+          <div><label class="vnchip-form-label">Icon</label><input type="text" class="vnchip-form-input mod-icon" value="${esc(m.icon || '')}" placeholder="fa-microchip"></div>
+          <div><label class="vnchip-form-label">Tên học phần</label><input type="text" class="vnchip-form-input mod-title" value="${esc(m.title || '')}"></div>
+          <div><label class="vnchip-form-label">Số giờ</label><input type="text" class="vnchip-form-input mod-hours" value="${esc(m.hours || '')}" placeholder="120 hours"></div>
+        </div>`;
+      list.appendChild(row);
+    });
+    if (!(data.modules || []).length) list.innerHTML = '<div style="font-size:0.8rem;color:#64748B;">Không có học phần nào — khối này sẽ ẩn trên trang.</div>';
+  }
+  function collectModules() {
+    const rows = document.querySelectorAll('#progModules .vnchip-repeater-item');
+    if (!rows.length && !(data.modules || []).length) return;
+    data.modules = [...rows].map(r => ({
+      icon: r.querySelector('.mod-icon').value.trim(),
+      title: r.querySelector('.mod-title').value.trim(),
+      hours: r.querySelector('.mod-hours').value.trim()
+    }));
+  }
+
+  // ---------- steps repeater ----------
+  function renderSteps() {
+    const list = document.getElementById('progSteps');
+    list.innerHTML = '';
+    (data.steps || []).forEach((s, i) => {
+      const row = document.createElement('div');
+      row.className = 'vnchip-repeater-item';
+      row.innerHTML = `
+        <div class="vnchip-repeater-head">
+          <span class="vnchip-repeater-num">Bước ${i + 1}</span>
+          <span class="vnchip-repeater-actions">
+            <button type="button" class="vnchip-mini-btn" onclick="vnLiveProgram.moveStep(${i}, -1)" title="Lên"><i class="fa-solid fa-arrow-up"></i></button>
+            <button type="button" class="vnchip-mini-btn" onclick="vnLiveProgram.moveStep(${i}, 1)" title="Xuống"><i class="fa-solid fa-arrow-down"></i></button>
+            <button type="button" class="vnchip-mini-btn danger" onclick="vnLiveProgram.removeStep(${i})" title="Xoá bước"><i class="fa-solid fa-trash"></i></button>
+          </span>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+          <div style="flex:none;width:150px;">
+            <img class="step-img-preview" src="${esc(imgSrc(s.img))}" alt="" style="width:150px;height:96px;object-fit:cover;border-radius:8px;border:1px solid #CBD5E1;background:#F1F5F9;display:block;">
+            <input type="file" accept="image/*" style="display:none;" class="step-img-file" onchange="vnLiveProgram.uploadStepImage(this, ${i})">
+            <button type="button" class="vnchip-mini-btn" style="margin-top:6px;width:100%;justify-content:center;" onclick="this.previousElementSibling.click()"><i class="fa-solid fa-cloud-arrow-up"></i> Đổi ảnh</button>
+            <input type="hidden" class="step-img" value="${esc(s.img || '')}">
+          </div>
+          <div style="flex:1;min-width:240px;">
+            <label class="vnchip-form-label">Tiêu đề bước</label>
+            <input type="text" class="vnchip-form-input step-title" value="${esc(s.title || '')}" placeholder="VD: 1. Application Submission">
+            <label class="vnchip-form-label" style="margin-top:8px;">Các ý (mỗi dòng một ý)</label>
+            <textarea class="vnchip-form-textarea step-points" rows="3">${esc((s.points || []).join('\n'))}</textarea>
+          </div>
+        </div>`;
+      list.appendChild(row);
+    });
+    document.querySelectorAll('.prog-steps-count').forEach(el => { el.textContent = '(' + (data.steps || []).length + ')'; });
+  }
+  function collectSteps() {
+    const rows = document.querySelectorAll('#progSteps .vnchip-repeater-item');
+    data.steps = [...rows].map(r => ({
+      img: r.querySelector('.step-img').value.trim(),
+      title: r.querySelector('.step-title').value.trim(),
+      points: r.querySelector('.step-points').value.split(/\r?\n/).map(s => s.trim()).filter(Boolean)
+    }));
+  }
+
+  function move(arr, i, dir) { const j = i + dir; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; }
+
+  window.vnLiveProgram = {
+    open() { fill(); openLiveModal('modalLiveEditProgram', 'prog-tab-info'); },
+    addStep() { collectSteps(); data.steps.push({ img: '', title: '', points: [] }); renderSteps(); },
+    removeStep(i) { collectSteps(); if (!confirm('Xoá bước ' + (i + 1) + '?')) return; data.steps.splice(i, 1); renderSteps(); },
+    moveStep(i, d) { collectSteps(); move(data.steps, i, d); renderSteps(); },
+    addModule() { collectModules(); (data.modules = data.modules || []).push({ icon: 'fa-microchip', title: '', hours: '' }); renderModules(); },
+    removeModule(i) { collectModules(); data.modules.splice(i, 1); renderModules(); },
+    moveModule(i, d) { collectModules(); move(data.modules, i, d); renderModules(); },
+    uploadStepImage(input, i) {
+      if (!input.files || !input.files[0]) return;
+      const row = input.closest('.vnchip-repeater-item');
+      const fd = new FormData();
+      fd.append('action', 'upload_image'); fd.append('image', input.files[0]); fd.append('subdir', 'media'); fd.append('prefix', 'program');
+      fetch(AJAX, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+        if (!res.success) { alert(res.error || 'Lỗi tải ảnh.'); return; }
+        row.querySelector('.step-img').value = res.path;
+        row.querySelector('.step-img-preview').src = res.full_url;
+        toast('✓ Đã tải ảnh lên, bấm Lưu để áp dụng');
+      }).catch(err => alert('Lỗi kết nối máy chủ: ' + err));
+      input.value = '';
+    }
+  };
+
+  function save() {
+    const btn = document.getElementById('btnSaveProgram');
+    const label = '<i class="fa-solid fa-floppy-disk"></i> Lưu trang chương trình';
+    const payload = collect();
+    if (!payload.title) { alert('Tên chương trình không được để trống.'); return; }
+    btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+    const fd = new FormData();
+    fd.append('action', 'save_program'); fd.append('key', KEY);
+    fd.append('data', JSON.stringify(payload));
+    fd.append('apply_url', document.getElementById('progApplyUrl').value.trim());
+    fetch(AJAX, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+      btn.disabled = false; btn.innerHTML = label;
+      if (!res.success) { alert(res.error || 'Lỗi khi lưu.'); return; }
+      toast('✓ Đã lưu, đang tải lại trang...');
+      setTimeout(() => location.reload(), 600);
+    }).catch(err => { btn.disabled = false; btn.innerHTML = label; alert('Lỗi kết nối máy chủ: ' + err); });
+  }
+
+  function reset() {
+    if (!confirm('Khôi phục nội dung gốc của trang này? Mọi chỉnh sửa (kể cả các bước và ảnh đã đổi) sẽ bị bỏ.')) return;
+    const fd = new FormData(); fd.append('action', 'reset_program'); fd.append('key', KEY);
+    fetch(AJAX, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+      if (!res.success) { alert(res.error || 'Không khôi phục được.'); return; }
+      toast('✓ Đã khôi phục mặc định, đang tải lại...');
+      setTimeout(() => location.reload(), 600);
+    });
+  }
+
+  function bind() {
+    document.getElementById('btnSaveProgram').addEventListener('click', save);
+    document.getElementById('btnResetProgram').addEventListener('click', reset);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
+})();
+</script>
+<?php endif; ?>
+
 

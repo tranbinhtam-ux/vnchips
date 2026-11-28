@@ -95,6 +95,24 @@ class Setting {
     }
 
     /**
+     * Remove a setting so the page falls back to its built-in default
+     * (used by Live Edit "reset" actions: reset_section, reset_program).
+     */
+    public static function delete($key) {
+        $db = Database::getInstance()->getConnection();
+        if (!$db) return false;
+
+        try {
+            $db->prepare("DELETE FROM `settings` WHERE `setting_key` = :key")->execute([':key' => $key]);
+            unset(self::$cache[$key]);
+            return true;
+        } catch (PDOException $e) {
+            error_log("Setting::delete error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Batch update an array of key => value pairs
      */
     public static function updateBatch(array $keyValues, $group = 'general') {

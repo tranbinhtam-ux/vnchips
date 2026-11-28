@@ -243,5 +243,49 @@ if ($action === 'save_tooltip') {
     exit;
 }
 
+// ---------------------------------------------------------------------------
+// 6. Talent / Interns program pages (program-detail.php)
+// ---------------------------------------------------------------------------
+require_once __DIR__ . '/../../models/Program.php';
+
+if ($action === 'save_program') {
+    $key = trim((string)($_POST['key'] ?? ''));
+    if (!Program::isValidKey($key)) {
+        echo json_encode(['success' => false, 'error' => 'Chương trình không hợp lệ.']);
+        exit;
+    }
+    $data = json_decode((string)($_POST['data'] ?? ''), true);
+    if (!is_array($data)) {
+        echo json_encode(['success' => false, 'error' => 'Dữ liệu gửi lên không hợp lệ.']);
+        exit;
+    }
+    $clean = Program::save($key, $data);
+    if ($clean === false) {
+        echo json_encode(['success' => false, 'error' => 'Không lưu được nội dung chương trình.']);
+        exit;
+    }
+    if (array_key_exists('apply_url', $_POST)) {
+        $applyUrl = trim((string)$_POST['apply_url']);
+        if ($applyUrl === '') {
+            Setting::delete('program_' . $key . '_apply_url');
+        } else {
+            Setting::set('program_' . $key . '_apply_url', $applyUrl, 'homepage');
+        }
+    }
+    echo json_encode(['success' => true, 'message' => 'Đã lưu trang chương trình!', 'program' => $clean]);
+    exit;
+}
+
+if ($action === 'reset_program') {
+    $key = trim((string)($_POST['key'] ?? ''));
+    if (!Program::isValidKey($key)) {
+        echo json_encode(['success' => false, 'error' => 'Chương trình không hợp lệ.']);
+        exit;
+    }
+    Program::reset($key);
+    echo json_encode(['success' => true, 'message' => 'Đã khôi phục nội dung mặc định.']);
+    exit;
+}
+
 echo json_encode(['success' => false, 'error' => 'Hành động không hợp lệ (Unknown action).']);
 exit;
