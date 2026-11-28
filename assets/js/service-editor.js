@@ -164,6 +164,12 @@
         startupFocus: false
       };
       if (opts.toolbar) cfg.toolbar = opts.toolbar;
+      if (opts.inline) {
+        // tooltip panels must stay inline HTML (no <p>): Enter inserts <br>, no auto paragraphs
+        cfg.enterMode = CKEDITOR.ENTER_BR;
+        cfg.shiftEnterMode = CKEDITOR.ENTER_BR;
+        cfg.autoParagraph = false;
+      }
       var ed = CKEDITOR.replace(textareaId, cfg);
       ctl.editor = ed;
       ed.on('instanceReady', function () {

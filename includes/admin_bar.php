@@ -5135,9 +5135,9 @@ function removeLiveConductCardRow(idx) {
       baseHref: BASE,
       contentsCss: [ADMIN_CSS],
       baseFloatZIndex: 10000300,
+      inline: true,
       toolbar: [
         { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'RemoveFormat'] },
-        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
         { name: 'links', items: ['Link', 'Unlink'] },
         { name: 'document', items: ['Source'] }
       ]

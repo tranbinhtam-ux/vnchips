@@ -62,7 +62,7 @@ class ServiceTooltip {
             $params = [
                 ':kw'      => $keyword,
                 ':title'   => trim((string)($data['title'] ?? '')) ?: $keyword,
-                ':content' => (string)($data['content'] ?? ''),
+                ':content' => self::inlineContent($data['content'] ?? ''),
                 ':active'  => !empty($data['is_active']) ? 1 : 0,
             ];
 
@@ -156,6 +156,26 @@ class ServiceTooltip {
             return '<b class="tuong-tac" tabindex="0" data-tip-id="' . (int)$tip['id'] . '" data-tip-key="' . e($tip['keyword']) . '">' . e($label)
                  . '<span class="chu-thich">' . $note . '</span></b>';
         }, $html);
+    }
+
+    /**
+     * The hover panel is a <span> inside a <b> inside the item's <p>, so its content must stay
+     * inline: a <p> or <ul> written in a rich-text editor would make the browser close the
+     * surrounding paragraph and scatter the rest of the item. Paragraphs become <br><br>,
+     * list items become bullet lines, other block wrappers are dropped.
+     */
+    public static function inlineContent($html) {
+        $html = trim((string)$html);
+        if ($html === '') return '';
+        $html = preg_replace('#<li[^>]*>#i', '&bull; ', $html);
+        $html = preg_replace('#</li>#i', '<br>', $html);
+        $html = preg_replace('#</?(ul|ol)[^>]*>#i', '<br>', $html);
+        $html = preg_replace('#</(p|div|h[1-6]|blockquote)>\s*<(p|div|h[1-6]|blockquote)[^>]*>#i', '<br><br>', $html);
+        $html = preg_replace('#</?(p|div|h[1-6]|blockquote)[^>]*>#i', '', $html);
+        $html = preg_replace('#(<br\s*/?>\s*){3,}#i', '<br><br>', $html);
+        $html = preg_replace('#^(\s*<br\s*/?>)+#i', '', $html);
+        $html = preg_replace('#(<br\s*/?>\s*)+$#i', '', $html);
+        return trim($html);
     }
 
     /** The inner HTML of one hover panel, shared by expand() and the Live Edit refresh */
