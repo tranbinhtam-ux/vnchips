@@ -133,7 +133,7 @@ require_once __DIR__ . '/includes/header.php';
       </div>
 
       <!-- Case-study cards come from Admin > Partners (pinned first); the slider shows the first ones -->
-      <div class="partners-carousel-track">
+      <div class="partners-carousel-track"<?= lt_admin('partners.php', 'Quản lý case study (Partners)') ?>>
         <?php foreach (array_slice($homePartners, 0, (int)Setting::getOr('home_partners_count', 6)) as $hp): ?>
         <a href="<?= url('partner-detail.php?slug=' . urlencode($hp['slug'])) ?>" class="partner-card">
           <div class="partner-card-media">
@@ -193,7 +193,7 @@ require_once __DIR__ . '/includes/header.php';
       </div>
 
       <!-- Dynamic Grid of Articles from MySQL Database -->
-      <div class="media-grid">
+      <div class="media-grid"<?= lt_admin('articles.php', 'Quản lý bài viết & tin tức') ?>>
         <?php foreach ($featuredNews as $article): ?>
           <a href="<?= url('media-detail.php?slug=' . urlencode($article['slug'])) ?>" class="media-card">
             <div class="media-thumb-wrapper">

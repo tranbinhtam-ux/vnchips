@@ -50,7 +50,7 @@ require_once __DIR__ . '/includes/header.php';
     <h2 class="media-page-title"<?= lt_attr('media_page_title', false, 'Tiêu đề trang') ?>><?= lt('media_page_title', 'MEDIA CENTER') ?></h2>
 
     <!-- Filter Pills & Search Bar -->
-    <div class="media-filter-bar">
+    <div class="media-filter-bar"<?= lt_admin('categories.php', 'Quản lý danh mục') ?>>
       <div class="media-filter-pills">
         <a href="<?= url('media-center.php') ?>" class="media-filter-pill <?= empty($categorySlug) ? 'active' : '' ?>">
           All Categories
@@ -82,7 +82,7 @@ require_once __DIR__ . '/includes/header.php';
         <p>Try refining your search keyword or selecting a different category filter.</p>
       </div>
     <?php else: ?>
-      <div class="media-page-grid">
+      <div class="media-page-grid"<?= lt_admin('articles.php', 'Quản lý bài viết & tin tức') ?>>
         <?php foreach ($articles as $art): ?>
           <article class="media-page-card">
             <a href="<?= url('media-detail.php?slug=' . urlencode($art['slug'])) ?>" class="media-page-thumb" aria-label="<?= e($art['title']) ?>">

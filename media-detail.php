@@ -32,7 +32,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- 2. Article Body Section -->
 <section style="background-color: #FFFFFF; padding: 40px 0 80px; color: #1E293B;">
-  <div class="container" style="max-width: 960px;">
+  <div class="container" style="max-width: 960px;"<?= lt_admin('article-edit.php?id=' . (int)$article['id'], 'Sửa bài viết này') ?>>
 
     <!-- Breadcrumb -->
     <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748B; margin-bottom: 20px; flex-wrap: wrap;">

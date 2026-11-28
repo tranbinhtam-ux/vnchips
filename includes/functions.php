@@ -206,6 +206,15 @@ function lt_img($key, $default) {
     return asset(Setting::getOr($key, $default));
 }
 
+/**
+ * Attributes for a block whose content is managed in an admin screen rather than in place:
+ * in edit mode the block gets an "Mở trong Admin" badge linking to that screen.
+ *   <section<?= lt_admin('articles.php', 'Quản lý bài viết') ?>>
+ */
+function lt_admin($adminPath, $label) {
+    return ' data-lt-admin="' . e(admin_url($adminPath)) . '" data-lt-admin-label="' . e($label) . '"';
+}
+
 /** Attributes for the <img> (or background element) of a live-image slot */
 function lt_img_attr($key, $label = '') {
     return ' data-lt-img="' . e($key) . '"' . ($label !== '' ? ' data-lt-label="' . e($label) . '"' : '');

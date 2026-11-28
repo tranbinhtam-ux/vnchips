@@ -62,7 +62,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- 2. Detailed Biography Section -->
 <section class="bio-detail-section" style="background-color: #FFFFFF; padding: 90px 0 110px; color: #1E293B;">
-  <div class="container">
+  <div class="container"<?= !empty($currentMember['id']) ? lt_admin('member-edit.php?id=' . (int)$currentMember['id'], 'Sửa hồ sơ thành viên này') : lt_admin('members.php', 'Quản lý thành viên') ?>>
     <div class="bio-layout-grid" style="display: grid; grid-template-columns: 400px 1fr; gap: 65px; align-items: start;">
       
       <!-- Left Column: Portrait Card -->

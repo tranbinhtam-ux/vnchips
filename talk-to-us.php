@@ -172,7 +172,7 @@ require_once __DIR__ . '/includes/header.php';
 
       <!-- Right Column: Interactive Floating Inquiry Form -->
       <div class="contact-right-col">
-        <div class="contact-card-box" id="contact-form">
+        <div class="contact-card-box" id="contact-form"<?= lt_admin('email-settings.php', 'Cài đặt email nhận liên hệ & CAPTCHA') ?>>
 
           <?php if ($successMessage): ?>
             <div style="background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; padding: 16px; border-radius: 12px; margin-bottom: 24px; font-weight: 600; font-size: 0.92rem;">

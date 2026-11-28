@@ -131,7 +131,7 @@ require_once __DIR__ . '/includes/header.php';
       </div>
     </div>
 
-    <div class="biz-success-grid">
+    <div class="biz-success-grid"<?= lt_admin('partners.php', 'Quản lý Success in Action (Partners)') ?>>
       <?php foreach ($successProjects as $project): ?>
         <a href="<?= url('partner-detail.php?slug=' . urlencode($project['slug'])) ?>" class="biz-success-card">
           <div class="biz-success-media">

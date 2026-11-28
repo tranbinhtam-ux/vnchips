@@ -47,7 +47,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="partners-layout-grid" style="display: grid; grid-template-columns: 1fr 380px; gap: 50px; align-items: start;">
 
       <!-- Left Column: Partners Cards Grid -->
-      <div class="partners-main-col">
+      <div class="partners-main-col"<?= lt_admin('partners.php', 'Quản lý Partners & case study') ?>>
 
         <?php foreach ($chunks as $index => $pageItems): ?>
           <?php $pageNum = $index + 1; ?>

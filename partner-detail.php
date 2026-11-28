@@ -63,7 +63,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- 2. Article Body with SIDEBAR -->
 <section style="background-color: #FFFFFF; padding: 70px 0 90px; color: #1E293B;">
-  <div class="container">
+  <div class="container"<?= !empty($partner['id']) ? lt_admin('partner-edit.php?id=' . (int)$partner['id'], 'Sửa case study này') : lt_admin('partners.php', 'Quản lý Partners') ?>>
     <div class="partners-layout-grid" style="display: grid; grid-template-columns: 1fr 380px; gap: 50px; align-items: start;">
 
       <article class="partner-detail-body">

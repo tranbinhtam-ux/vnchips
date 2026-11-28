@@ -1149,6 +1149,16 @@ body.admin-edit-active .live-lt-img-wrap { outline: 1px dashed rgba(14, 165, 233
 body.admin-edit-active span.live-lt { display: inline-block; }
 .live-edit-badge.badge-edit-tech-ai { top: 24px !important; right: 24px !important; }
 .live-edit-badge.badge-edit-biz-projects { top: -42px !important; right: 0 !important; background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important; }
+
+/* "Mở trong Admin" badge for blocks managed by an admin screen */
+.live-edit-badge.live-admin-badge {
+  top: -16px !important;
+  right: 12px !important;
+  background: linear-gradient(135deg, #475569 0%, #1E293B 100%) !important;
+  z-index: 70 !important;
+}
+#vnchipNav .live-admin-badge { top: 50% !important; transform: translateY(-50%); right: -8px !important; padding: 5px 10px; font-size: 0.68rem; }
+#vnchipNav.live-editable-wrap { position: relative; }
 </style>
 
 <!-- 3. Modal Quick Edit: 3 Golden Stats -->
@@ -5731,6 +5741,21 @@ function removeLiveConductCardRow(idx) {
       pen.title = 'Sửa: ' + (el.dataset.ltLabel || el.dataset.lt);
       pen.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); openText(el); });
       el.appendChild(pen);
+    });
+    // blocks managed in an admin screen: a badge that opens that screen in a new tab
+    document.querySelectorAll('[data-lt-admin]').forEach(el => {
+      if (el.dataset.ltAdminBound) return;
+      el.dataset.ltAdminBound = '1';
+      el.classList.add('live-editable-wrap', 'live-admin-wrap');
+      const a = document.createElement('a');
+      a.className = 'live-edit-badge live-admin-badge';
+      a.href = el.dataset.ltAdmin;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i> ' + (el.dataset.ltAdminLabel || 'Mở trong Admin');
+      a.title = 'Khối này được quản lý trong trang Admin — mở trong tab mới';
+      a.addEventListener('click', e => e.stopPropagation());
+      el.appendChild(a);
     });
     document.querySelectorAll('[data-lt-img]').forEach(img => {
       if (img.dataset.ltBound) return;
