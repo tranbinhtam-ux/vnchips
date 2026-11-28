@@ -58,6 +58,16 @@ $tooltips = ServiceTooltip::getAll();
 $usage = ServiceTooltip::usageCounts();
 
 $editing = $editing ?? ['id' => 0, 'keyword' => '', 'title' => '', 'content' => '', 'is_active' => 1];
+// service-edit.php links here with ?keyword= for a word that has no entry yet
+if (!$editing['id'] && $editing['keyword'] === '' && !empty($_GET['keyword'])) {
+    $prefill = trim((string)$_GET['keyword']);
+    $existing = ServiceTooltip::findByKeyword($prefill);
+    if ($existing) {
+        header("Location: " . admin_url('tooltips.php?id=' . (int)$existing['id']));
+        exit;
+    }
+    $editing['keyword'] = $prefill;
+}
 
 $adminTitle = 'Từ điển Tooltip';
 $adminActivePage = 'tooltips';

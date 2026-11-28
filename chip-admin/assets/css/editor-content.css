@@ -52,3 +52,25 @@ table td, table th { border: 1px solid #E2E8F0; padding: 8px 12px; }
 table th { background: #F1F5F9; font-weight: 700; }
 
 hr { border: 0; border-top: 1px solid #E2E8F0; margin: 24px 0; }
+
+/* Interactive keyword inside the editor: looks like the orange tooltip word on the site,
+   so an editor never sees the [[marker]] brackets that are stored in the database. */
+span.tip-marker {
+  color: #F25B22;
+  font-weight: 700;
+  border-bottom: 1px dashed #F25B22;
+  background: rgba(242, 91, 34, 0.07);
+  border-radius: 3px;
+  padding: 0 2px;
+  cursor: text;
+}
+span.tip-marker::after {
+  content: "\2139";          /* small (i) hint: this word has a hover explanation */
+  font-size: 0.7em;
+  font-weight: 400;
+  margin-left: 2px;
+  vertical-align: super;
+  color: #F25B22;
+  opacity: 0.7;
+}
+p.spec-paragraph { margin-bottom: 16px; }

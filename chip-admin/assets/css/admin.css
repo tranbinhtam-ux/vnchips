@@ -1083,3 +1083,17 @@ select.form-select:focus,
     padding: 14px 20px;
   }
 }
+
+/* ---- Keyword chips under the service item editor (shared with the frontend Live Edit) ---- */
+.svc-kw-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.svc-kw-empty { font-size: 0.8rem; color: #64748B; }
+.svc-kw-chip { display: inline-flex; align-items: center; gap: 8px; padding: 5px 6px 5px 10px; border-radius: 9999px; border: 1px solid #FDBA74; background: #FFF7ED; font-size: 0.78rem; color: #0F172A; }
+.svc-kw-chip.missing { border-color: #CBD5E1; background: #F8FAFC; }
+.svc-kw-dot { width: 8px; height: 8px; border-radius: 50%; background: #16A34A; flex: none; }
+.svc-kw-chip.missing .svc-kw-dot { background: #94A3B8; }
+.svc-kw-name { font-weight: 700; color: #C2410C; }
+.svc-kw-chip.missing .svc-kw-name { color: #475569; }
+.svc-kw-state { color: #64748B; font-size: 0.72rem; }
+.svc-kw-btn { border: 0; border-radius: 9999px; padding: 4px 10px; font-size: 0.72rem; font-weight: 700; background: #F25B22; color: #FFFFFF; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; }
+.svc-kw-chip.missing .svc-kw-btn { background: #0284C7; }
+.svc-kw-btn:hover { filter: brightness(0.92); }

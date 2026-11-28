@@ -139,18 +139,27 @@ require_once __DIR__ . '/includes/header.php';
           <label class="form-label fw-bold text-dark mb-0">
             <i class="fa-solid fa-align-left text-primary me-2"></i>Nội dung mục
           </label>
-          <span class="small text-muted">Dùng nút <strong>Source</strong> trên thanh công cụ để sửa HTML thô.</span>
+          <span class="small text-muted">Từ khoá màu cam = có tooltip khi rê chuột. Nút <strong>Source</strong> để sửa HTML thô.</span>
         </div>
 
         <textarea name="body" id="service-body" class="form-control" rows="12"><?= e($item['body']) ?></textarea>
 
         <div class="mt-3 p-3 rounded-3" style="background: #FFFBEB; border: 1px dashed #FCD34D;">
           <div class="fw-bold mb-2" style="color: #92400E; font-size: 0.88rem;">
-            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Chèn từ khoá có tooltip
+            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Từ khoá có tooltip
           </div>
           <div class="small text-muted mb-2">
-            Bấm một từ khoá để chèn <code>[[từ khoá]]</code> vào vị trí con trỏ. Khi hiển thị, nó thành chữ cam gạch chân, rê chuột vào hiện bảng giải thích.
-            Từ khoá không có trong từ điển sẽ hiện ra chữ thường, không lộ dấu ngoặc.
+            Trong nội dung, từ khoá có tooltip hiện màu cam gạch chân. <strong>Bôi đen một cụm từ</strong> rồi bấm “Gắn tooltip”
+            để biến nó thành từ khoá; đặt con trỏ vào từ khoá và bấm “Bỏ tooltip” để gỡ. Bấm một từ khoá bên dưới để chèn vào vị trí con trỏ.
+          </div>
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <button type="button" class="btn btn-sm btn-warning fw-bold" id="btn-wrap-keyword" disabled>
+              <i class="fa-solid fa-comment-dots me-1"></i> Gắn tooltip cho chữ đang chọn
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-unwrap-keyword" disabled>
+              <i class="fa-solid fa-eraser me-1"></i> Bỏ tooltip
+            </button>
+            <span class="small text-muted align-self-center" id="kw-sel-hint"></span>
           </div>
           <div class="d-flex flex-wrap gap-2">
             <?php if (empty($keywords)): ?>
@@ -167,6 +176,10 @@ require_once __DIR__ . '/includes/header.php';
           <a href="<?= admin_url('tooltips.php') ?>" target="_blank" class="btn btn-sm btn-link px-0 mt-2">
             <i class="fa-solid fa-gear me-1"></i> Quản lý từ điển tooltip
           </a>
+          <div class="mt-2 pt-2 border-top" style="border-color: #FCD34D !important;">
+            <div class="small fw-bold mb-1" style="color: #92400E;">Từ khoá đang dùng trong mục này</div>
+            <div class="d-flex flex-wrap gap-2" id="kw-in-item"><span class="small text-muted fst-italic">…</span></div>
+          </div>
         </div>
       </div>
 
@@ -225,6 +238,7 @@ require_once __DIR__ . '/includes/header.php';
   </div>
 </form>
 
+<script src="<?= asset('js/service-editor.js') ?>?v=<?= @filemtime(__DIR__ . '/../assets/js/service-editor.js') ?>"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   // Anchor generator
@@ -270,45 +284,76 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // CKEditor for the item body
-  let ckBody = null;
-  if (typeof CKEDITOR !== 'undefined') {
-    CKEDITOR.config.versionCheck = false;
-    CKEDITOR.config.baseHref = '<?= absolute_url() ?>';
-    ckBody = CKEDITOR.replace('service-body', {
-      height: 420,
-      removeButtons: 'Save,NewPage,ExportPdf,Preview,Print',
-      extraPlugins: 'uploadimage,justify',
-      baseHref: '<?= absolute_url() ?>',
-      contentsCss: ['https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', '<?= absolute_url(ADMIN_DIR . '/assets/css/editor-content.css') ?>?v=<?= @filemtime(__DIR__ . '/assets/css/editor-content.css') ?>'],
+  // CKEditor for the item body (shared editor: keywords show as orange words, never as [[brackets]])
+  const dict = <?= json_encode(array_map(static function ($kw) {
+      return ['id' => (int)$kw['id'], 'keyword' => $kw['keyword'], 'title' => $kw['title']];
+  }, $keywords), JSON_UNESCAPED_UNICODE) ?>;
+  const dictMap = VNServiceEditor.dictToMap(dict);
+  const tooltipsUrl = '<?= admin_url('tooltips.php') ?>';
+  const kwList = document.getElementById('kw-in-item');
+  const btnWrap = document.getElementById('btn-wrap-keyword');
+  const btnUnwrap = document.getElementById('btn-unwrap-keyword');
+  const selHint = document.getElementById('kw-sel-hint');
+
+  function renderUsed(keywords) {
+    VNServiceEditor.renderKeywordList(kwList, keywords, dictMap, function(kw, row) {
+      window.open(row ? tooltipsUrl + '?id=' + row.id : tooltipsUrl + '?keyword=' + encodeURIComponent(kw), '_blank');
     });
   }
 
-  // Insert a [[keyword]] marker at the caret
+  const body = VNServiceEditor.create('service-body', {
+    height: 420,
+    baseHref: '<?= absolute_url() ?>',
+    extraPlugins: 'uploadimage,justify',
+    contentsCss: ['https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', '<?= absolute_url(ADMIN_DIR . '/assets/css/editor-content.css') ?>?v=<?= @filemtime(__DIR__ . '/assets/css/editor-content.css') ?>'],
+    onChange: renderUsed,
+    onCaret: function(markerKw, selected) {
+      if (markerKw) {
+        selHint.innerHTML = 'Đang ở từ khoá <b>' + VNServiceEditor.escHtml(markerKw) + '</b>';
+        btnWrap.disabled = true; btnUnwrap.disabled = false;
+      } else if (selected) {
+        selHint.innerHTML = 'Đã chọn: <b>' + VNServiceEditor.escHtml(selected) + '</b>';
+        btnWrap.disabled = false; btnUnwrap.disabled = true;
+      } else {
+        selHint.innerHTML = '';
+        btnWrap.disabled = true; btnUnwrap.disabled = true;
+      }
+    }
+  });
+  body.ready(function(ctl) {
+    // the textarea holds the stored body with [[markers]]: show it in span form
+    ctl.setBody(document.getElementById('service-body').value);
+    setTimeout(function() { renderUsed(ctl.getKeywords()); }, 150);
+  });
+
+  btnWrap.addEventListener('click', function() {
+    const kw = body.wrapSelection();
+    if (!kw) return;
+    renderUsed(body.getKeywords());
+    if (!dictMap[VNServiceEditor.normalise(kw)]) {
+      showToast('Từ khoá mới “' + kw + '” chưa có giải thích — viết ở trang Từ điển Tooltip', 'info');
+    }
+  });
+  btnUnwrap.addEventListener('click', function() {
+    if (body.unwrapCurrent()) renderUsed(body.getKeywords());
+  });
+
+  // Insert an existing keyword at the caret (or wrap the current selection with it)
   document.querySelectorAll('.btn-insert-keyword').forEach(btn => {
     btn.addEventListener('click', function() {
-      const marker = '[[' + this.getAttribute('data-keyword') + ']]';
-      if (ckBody) {
-        ckBody.insertText(marker);
-        ckBody.focus();
-      } else {
-        const ta = document.getElementById('service-body');
-        if (ta) {
-          const start = ta.selectionStart || 0;
-          ta.value = ta.value.slice(0, start) + marker + ta.value.slice(ta.selectionEnd || start);
-          ta.focus();
-        }
-      }
-      showToast('Đã chèn ' + marker, 'info');
+      const kw = this.getAttribute('data-keyword');
+      body.insertKeyword(kw);
+      renderUsed(body.getKeywords());
+      showToast('Đã chèn từ khoá ' + kw, 'info');
     });
   });
 
-  // CKEditor keeps its data in its own instance until submit
+  // On submit, hand the server the [[marker]] form
   const form = document.getElementById('service-form');
   if (form) {
     form.addEventListener('submit', function() {
-      if (ckBody) {
-        document.getElementById('service-body').value = ckBody.getData();
+      if (body.editor) {
+        document.getElementById('service-body').value = body.getBody();
       }
     });
   }

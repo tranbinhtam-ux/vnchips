@@ -1021,6 +1021,88 @@ body.admin-edit-active .live-edit-badge {
     display: none !important;
   }
 }
+
+/* ===================================================
+   LIVE EDIT: Design/IP Service items + keyword tooltips
+   =================================================== */
+.live-svc-pen {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  margin-right: 14px;
+  padding: 5px 11px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: linear-gradient(135deg, #F25B22 0%, #C2410C 100%);
+  color: #FFFFFF !important;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(242, 91, 34, 0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+body.admin-edit-active .live-svc-pen { display: inline-flex; }
+.live-svc-pen:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(242, 91, 34, 0.5); }
+
+.live-tip-pen {
+  display: none;
+  position: absolute;
+  top: -12px;
+  right: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0F172A;
+  color: #FFFFFF;
+  font-size: 0.6rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 5;
+  transition: transform 0.15s, background 0.15s;
+}
+body.admin-edit-active .tuong-tac .live-tip-pen { display: inline-flex; }
+.live-tip-pen:hover { background: #F25B22; transform: scale(1.12); }
+body.admin-edit-active .tuong-tac { outline: 1px dashed rgba(242, 91, 34, 0.45); outline-offset: 2px; }
+
+/* keyword panel under the editor */
+.svc-kw-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.svc-kw-empty { font-size: 0.8rem; color: #64748B; }
+.svc-kw-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 6px 5px 10px; border-radius: 9999px;
+  border: 1px solid #FDBA74; background: #FFF7ED; font-size: 0.78rem; color: #0F172A;
+}
+.svc-kw-chip.missing { border-color: #CBD5E1; background: #F8FAFC; }
+.svc-kw-dot { width: 8px; height: 8px; border-radius: 50%; background: #16A34A; flex: none; }
+.svc-kw-chip.missing .svc-kw-dot { background: #94A3B8; }
+.svc-kw-name { font-weight: 700; color: #C2410C; }
+.svc-kw-chip.missing .svc-kw-name { color: #475569; }
+.svc-kw-state { color: #64748B; font-size: 0.72rem; }
+.svc-kw-btn {
+  border: 0; border-radius: 9999px; padding: 4px 10px; font-size: 0.72rem; font-weight: 700;
+  background: #F25B22; color: #FFFFFF; cursor: pointer; display: inline-flex; gap: 4px; align-items: center;
+}
+.svc-kw-chip.missing .svc-kw-btn { background: #0284C7; }
+.svc-kw-btn:hover { filter: brightness(0.92); }
+
+.svc-sel-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  padding: 10px 12px; margin-top: 10px; border-radius: 10px;
+  background: #FFFBEB; border: 1px dashed #FCD34D; font-size: 0.8rem; color: #78350F;
+}
+.svc-sel-bar .vnchip-btn { padding: 6px 12px; font-size: 0.78rem; }
+.svc-sel-bar .vnchip-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.svc-dict-select { padding: 6px 10px; border-radius: 8px; border: 1px solid #CBD5E1; font-size: 0.8rem; max-width: 240px; }
+
+#modalLiveEditTooltip { z-index: 10000000; }
+#modalLiveEditServiceItem .vnchip-modal-body, #modalLiveEditTooltip .vnchip-modal-body { max-height: 80vh; }
+.svc-img-thumb { width: 160px; height: 90px; border-radius: 10px; object-fit: cover; background: #0A1120; border: 1px solid #334155; flex: none; }
 </style>
 
 <!-- 3. Modal Quick Edit: 3 Golden Stats -->
@@ -1965,8 +2047,9 @@ body.admin-edit-active .live-edit-badge {
             Nội dung từng mục &amp; Từ điển Tooltip
           </div>
           <div style="font-size: 0.82rem; color: #64748B; max-width: 560px; margin: 0 auto 16px;">
-            Tên mục, ảnh minh hoạ và nội dung của từng mục accordion được quản lý trong trang Admin riêng.
-            Các từ khoá cam gạch chân (rê chuột hiện giải thích) lấy từ Từ điển Tooltip &mdash; trong nội dung chỉ cần viết <code>[[từ khoá]]</code>.
+            <strong>Cách nhanh nhất:</strong> ngay trên trang, mỗi mục có nút <span style="display:inline-block;background:#F25B22;color:#fff;border-radius:9999px;padding:1px 8px;font-size:0.74rem;font-weight:700;">✎ Sửa mục</span>
+            để sửa tên, ảnh và nội dung; mỗi từ khoá cam gạch chân có chấm <span style="display:inline-block;background:#0F172A;color:#fff;border-radius:50%;width:16px;height:16px;font-size:0.6rem;line-height:16px;text-align:center;">✎</span>
+            để sửa phần giải thích hiện khi rê chuột. Trang Admin bên dưới dùng để thêm/xoá mục, đổi thứ tự hoặc chuyển cột.
           </div>
           <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
             <a href="<?= admin_url('services.php') ?>" target="_blank" rel="noopener noreferrer" class="vnchip-btn vnchip-btn-primary" style="font-size: 0.82rem; background: linear-gradient(135deg, #F25B22 0%, #C2410C 100%);">
@@ -2513,6 +2596,133 @@ body.admin-edit-active .live-edit-badge {
 </div>
 
 <!-- 11. Toast Alert -->
+
+<!-- Live Edit: one Design/IP Service accordion item -->
+<div class="vnchip-live-modal" id="modalLiveEditServiceItem">
+  <div class="vnchip-modal-backdrop" onclick="closeLiveModal('modalLiveEditServiceItem')"></div>
+  <div class="vnchip-modal-dialog" style="max-width: 900px;">
+    <div class="vnchip-modal-header">
+      <h5 class="vnchip-modal-title">
+        <i class="fa-solid fa-pen-to-square" style="color: #F25B22;"></i> Sửa mục: <span id="svcItemModalTitle">…</span>
+      </h5>
+      <button type="button" class="vnchip-modal-close" onclick="closeLiveModal('modalLiveEditServiceItem')">&times;</button>
+    </div>
+
+    <div class="vnchip-modal-body">
+      <input type="hidden" id="svcItemId" value="0">
+
+      <div class="vnchip-form-group">
+        <label class="vnchip-form-label">Tên mục (hiện trên thanh accordion):</label>
+        <input type="text" id="svcItemTitle" class="vnchip-form-input" style="font-weight: 800; font-size: 1rem;">
+      </div>
+
+      <div style="background: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+        <div style="font-weight: 700; color: #F25B22; font-size: 0.85rem; margin-bottom: 10px;">
+          <i class="fa-solid fa-image me-1"></i> Ảnh minh hoạ
+        </div>
+        <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+          <img id="svcItemImgPreview" class="svc-img-thumb" src="" alt="">
+          <div style="flex: 1; min-width: 220px;">
+            <input type="file" id="svcItemImgFile" accept="image/*" style="display: none;">
+            <button type="button" class="vnchip-btn vnchip-btn-primary" onclick="document.getElementById('svcItemImgFile').click()" style="padding: 7px 14px; font-size: 0.8rem; background: linear-gradient(135deg, #F25B22 0%, #C2410C 100%);">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Tải ảnh mới lên
+            </button>
+            <span id="svcItemImgStatus" style="font-size: 0.78rem; margin-left: 8px;"></span>
+            <input type="text" id="svcItemImgUrl" class="vnchip-form-input" style="font-size: 0.76rem; padding: 6px 10px; font-family: monospace; margin-top: 8px;" placeholder="uploads/media/....webp">
+          </div>
+        </div>
+      </div>
+
+      <div class="vnchip-form-group" style="margin-bottom: 0;">
+        <label class="vnchip-form-label">Nội dung mục:</label>
+        <textarea id="svcItemBody" rows="14" class="vnchip-form-textarea"></textarea>
+
+        <div class="svc-sel-bar" id="svcSelBar">
+          <span id="svcSelHint"><i class="fa-solid fa-i-cursor me-1"></i> Bôi đen một cụm từ trong nội dung để gắn tooltip cho nó.</span>
+          <button type="button" class="vnchip-btn vnchip-btn-primary" id="svcBtnWrap" disabled style="background: linear-gradient(135deg, #F25B22 0%, #C2410C 100%);">
+            <i class="fa-solid fa-comment-dots"></i> Gắn tooltip
+          </button>
+          <button type="button" class="vnchip-btn vnchip-btn-secondary" id="svcBtnEditCurrent" disabled>
+            <i class="fa-solid fa-pen"></i> Sửa giải thích
+          </button>
+          <button type="button" class="vnchip-btn vnchip-btn-secondary" id="svcBtnUnwrap" disabled>
+            <i class="fa-solid fa-eraser"></i> Bỏ tooltip
+          </button>
+          <span style="margin-left: auto; display: inline-flex; gap: 6px; align-items: center;">
+            <select class="svc-dict-select" id="svcDictSelect"><option value="">Chèn từ khoá có sẵn…</option></select>
+          </span>
+        </div>
+
+        <div style="margin-top: 12px;">
+          <div style="font-weight: 700; color: #0F172A; font-size: 0.82rem; margin-bottom: 8px;">
+            <i class="fa-solid fa-list-ul me-1" style="color: #F25B22;"></i> Từ khoá có tooltip trong mục này
+          </div>
+          <div class="svc-kw-list" id="svcKwList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vnchip-modal-footer">
+      <a href="<?= admin_url('services.php') ?>" target="_blank" rel="noopener noreferrer" class="vnchip-btn vnchip-btn-secondary" style="margin-right: auto;">
+        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Thêm/xoá/sắp xếp mục
+      </a>
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" onclick="closeLiveModal('modalLiveEditServiceItem')">Hủy bỏ</button>
+      <button type="button" class="vnchip-btn vnchip-btn-primary" id="btnSaveSvcItem" style="background: linear-gradient(135deg, #F25B22 0%, #C2410C 100%);">
+        <i class="fa-solid fa-floppy-disk"></i> Lưu mục
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Live Edit: one keyword tooltip (the panel shown on hover) -->
+<div class="vnchip-live-modal" id="modalLiveEditTooltip">
+  <div class="vnchip-modal-backdrop" onclick="closeLiveModal('modalLiveEditTooltip')"></div>
+  <div class="vnchip-modal-dialog" style="max-width: 720px;">
+    <div class="vnchip-modal-header">
+      <h5 class="vnchip-modal-title">
+        <i class="fa-solid fa-comment-dots" style="color: #F25B22;"></i> Tooltip: <span id="tipModalKeyword">…</span>
+      </h5>
+      <button type="button" class="vnchip-modal-close" onclick="closeLiveModal('modalLiveEditTooltip')">&times;</button>
+    </div>
+
+    <div class="vnchip-modal-body">
+      <input type="hidden" id="tipId" value="0">
+      <div id="tipNewNote" style="display:none; background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E3A8A; border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; margin-bottom: 12px;">
+        <i class="fa-solid fa-circle-info me-1"></i> Từ khoá này chưa có giải thích. Viết nội dung rồi bấm Lưu, từ khoá sẽ hiện màu cam và có tooltip khi rê chuột.
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="vnchip-form-group">
+          <label class="vnchip-form-label">Từ khoá (chữ hiện trên trang):</label>
+          <input type="text" id="tipKeyword" class="vnchip-form-input" style="font-weight: 700;">
+        </div>
+        <div class="vnchip-form-group">
+          <label class="vnchip-form-label">Tiêu đề bảng giải thích <span style="color:#94A3B8; font-weight: 400;">(trống = dùng từ khoá)</span>:</label>
+          <input type="text" id="tipTitle" class="vnchip-form-input">
+        </div>
+      </div>
+
+      <div class="vnchip-form-group" style="margin-bottom: 0;">
+        <label class="vnchip-form-label">Nội dung giải thích:</label>
+        <textarea id="tipContent" rows="8" class="vnchip-form-textarea"></textarea>
+        <div style="font-size: 0.74rem; color: #64748B; margin-top: 6px;">
+          Dùng cho tất cả các mục có từ khoá này. Trên máy tính hiện khi rê chuột, trên điện thoại hiện khi chạm.
+        </div>
+      </div>
+    </div>
+
+    <div class="vnchip-modal-footer">
+      <a href="<?= admin_url('tooltips.php') ?>" target="_blank" rel="noopener noreferrer" class="vnchip-btn vnchip-btn-secondary" style="margin-right: auto;">
+        <i class="fa-solid fa-book me-1"></i> Toàn bộ từ điển
+      </a>
+      <button type="button" class="vnchip-btn vnchip-btn-secondary" onclick="closeLiveModal('modalLiveEditTooltip')">Hủy bỏ</button>
+      <button type="button" class="vnchip-btn vnchip-btn-primary" id="btnSaveTip" style="background: linear-gradient(135deg, #F25B22 0%, #C2410C 100%);">
+        <i class="fa-solid fa-floppy-disk"></i> Lưu tooltip
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="live-edit-toast">
   <i class="fa-solid fa-circle-check text-success" style="font-size: 1.2rem;"></i>
   <span id="live-edit-toast-text">Đã lưu thay đổi thành công!</span>
@@ -3442,6 +3652,9 @@ function removeLiveConductCardRow(idx) {
       };
       bizServices.appendChild(badge);
     }
+
+    // 9b. Per-item "Sửa mục" buttons + per-keyword tooltip pens (defined in the block below)
+    if (window.vnLiveServices) window.vnLiveServices.inject();
 
     // 10. Call to Action Banner (All pages)
     const ctaTarget = document.querySelector('#live-cta-box, .cta-box-new, #global-cta-section, .cta-section-new');
@@ -4682,3 +4895,347 @@ function removeLiveConductCardRow(idx) {
 
 })();
 </script>
+
+<script src="<?= asset('js/service-editor.js') ?>?v=<?= @filemtime(__DIR__ . '/../assets/js/service-editor.js') ?>"></script>
+<script>
+/**
+ * Live Edit for Design/IP Service items and their keyword tooltips.
+ * Everything talks to chip-admin/ajax/live-edit.php (get/save_service_item, get/save_tooltip).
+ */
+(function () {
+  const AJAX = '<?= admin_url("ajax/live-edit.php") ?>';
+  const ADMIN_CSS = '<?= absolute_url(ADMIN_DIR . '/assets/css/editor-content.css') ?>?v=<?= @filemtime(__DIR__ . '/../' . ADMIN_DIR . '/assets/css/editor-content.css') ?>';
+  const BASE = '<?= absolute_url() ?>';
+  const SE = window.VNServiceEditor;
+
+  let bodyCtl = null;      // item body editor
+  let tipCtl = null;       // tooltip content editor
+  let dictMap = {};        // normalised keyword -> {id, keyword, title}
+  let currentItem = null;
+  let tipReturnToItem = false;
+
+  function toast(msg, ok = true) {
+    const t = document.getElementById('live-edit-toast');
+    const tx = document.getElementById('live-edit-toast-text');
+    if (!t || !tx) return;
+    tx.innerText = msg;
+    t.style.borderLeftColor = ok ? '#10B981' : '#F59E0B';
+    t.style.display = 'inline-flex';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.style.display = 'none'; }, 3500);
+  }
+
+  function post(data) {
+    const fd = new FormData();
+    Object.keys(data).forEach(k => fd.append(k, data[k]));
+    return fetch(AJAX, { method: 'POST', body: fd }).then(r => r.json());
+  }
+
+  function busy(btn, on, label) {
+    btn.disabled = on;
+    btn.innerHTML = on ? '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...' : label;
+  }
+
+  // ------------------------------------------------------------------
+  // Badges on the page
+  // ------------------------------------------------------------------
+  function inject() {
+    document.querySelectorAll('.service-item[data-service-id]').forEach(item => {
+      const header = item.querySelector('.service-header');
+      if (!header || header.querySelector('.live-svc-pen')) return;
+      const pen = document.createElement('button');
+      pen.type = 'button';
+      pen.className = 'live-svc-pen';
+      pen.innerHTML = '<i class="fa-solid fa-pen"></i> Sửa mục';
+      pen.title = 'Sửa tên, ảnh và nội dung của mục này';
+      pen.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        openItem(parseInt(item.getAttribute('data-service-id'), 10));
+      });
+      const icon = header.querySelector('.service-icon');
+      header.insertBefore(pen, icon || null);
+    });
+
+    document.querySelectorAll('.service-body .tuong-tac').forEach(kw => {
+      if (kw.querySelector('.live-tip-pen')) return;
+      const pen = document.createElement('span');
+      pen.className = 'live-tip-pen';
+      pen.innerHTML = '<i class="fa-solid fa-pen"></i>';
+      pen.title = 'Sửa phần giải thích của từ khoá này';
+      pen.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        tipReturnToItem = false;
+        openTip({ id: parseInt(kw.getAttribute('data-tip-id') || '0', 10), keyword: kw.getAttribute('data-tip-key') || kw.firstChild.textContent });
+      });
+      const note = kw.querySelector('.chu-thich');
+      kw.insertBefore(pen, note || null);
+    });
+  }
+
+  // ------------------------------------------------------------------
+  // Item editor
+  // ------------------------------------------------------------------
+  function ensureBodyEditor(cb) {
+    if (bodyCtl) { bodyCtl.ready(cb); return; }
+    bodyCtl = SE.create('svcItemBody', {
+      height: 360,
+      baseHref: BASE,
+      contentsCss: ['https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', ADMIN_CSS],
+      baseFloatZIndex: 10000200,
+      onChange: refreshKwList,
+      onCaret: updateSelBar
+    });
+    bodyCtl.ready(cb);
+  }
+
+  function refreshKwList() {
+    if (!bodyCtl) return;
+    SE.renderKeywordList(document.getElementById('svcKwList'), bodyCtl.getKeywords(), dictMap, (kw, row) => {
+      tipReturnToItem = true;
+      openTip({ id: row ? row.id : 0, keyword: kw });
+    });
+  }
+
+  function updateSelBar(markerKeyword, selectedText) {
+    const hint = document.getElementById('svcSelHint');
+    const bWrap = document.getElementById('svcBtnWrap');
+    const bEdit = document.getElementById('svcBtnEditCurrent');
+    const bUn = document.getElementById('svcBtnUnwrap');
+    if (markerKeyword) {
+      hint.innerHTML = '<i class="fa-solid fa-comment-dots me-1" style="color:#F25B22"></i> Đang ở từ khoá <b>' + SE.escHtml(markerKeyword) + '</b>';
+      bWrap.disabled = true; bEdit.disabled = false; bUn.disabled = false;
+      bEdit.dataset.kw = markerKeyword;
+    } else if (selectedText) {
+      hint.innerHTML = '<i class="fa-solid fa-highlighter me-1" style="color:#F25B22"></i> Đã chọn: <b>' + SE.escHtml(selectedText) + '</b>';
+      bWrap.disabled = false; bEdit.disabled = true; bUn.disabled = true;
+    } else {
+      hint.innerHTML = '<i class="fa-solid fa-i-cursor me-1"></i> Bôi đen một cụm từ trong nội dung để gắn tooltip cho nó.';
+      bWrap.disabled = true; bEdit.disabled = true; bUn.disabled = true;
+    }
+  }
+
+  function fillDictSelect() {
+    const sel = document.getElementById('svcDictSelect');
+    sel.innerHTML = '<option value="">Chèn từ khoá có sẵn…</option>';
+    Object.keys(dictMap).sort().forEach(k => {
+      const o = document.createElement('option');
+      o.value = dictMap[k].keyword;
+      o.textContent = dictMap[k].keyword;
+      sel.appendChild(o);
+    });
+  }
+
+  function openItem(id) {
+    post({ action: 'get_service_item', id })
+      .then(res => {
+        if (!res.success) { alert(res.error || 'Không tải được mục.'); return; }
+        currentItem = res.item;
+        dictMap = SE.dictToMap(res.item.dictionary);
+        document.getElementById('svcItemId').value = res.item.id;
+        document.getElementById('svcItemModalTitle').innerText = res.item.title;
+        document.getElementById('svcItemTitle').value = res.item.title;
+        document.getElementById('svcItemImgUrl').value = res.item.image_url || '';
+        document.getElementById('svcItemImgPreview').src = res.item.image_src || '';
+        document.getElementById('svcItemImgStatus').innerHTML = '';
+        fillDictSelect();
+        openLiveModal('modalLiveEditServiceItem');
+        ensureBodyEditor(ctl => {
+          ctl.setBody(res.item.body);
+          setTimeout(refreshKwList, 150);
+          updateSelBar(null, '');
+        });
+      })
+      .catch(err => alert('Lỗi kết nối máy chủ: ' + err));
+  }
+
+  function saveItem() {
+    const btn = document.getElementById('btnSaveSvcItem');
+    const label = '<i class="fa-solid fa-floppy-disk"></i> Lưu mục';
+    const id = parseInt(document.getElementById('svcItemId').value, 10);
+    const title = document.getElementById('svcItemTitle').value.trim();
+    if (!title) { alert('Tên mục không được để trống.'); return; }
+    busy(btn, true, label);
+    post({
+      action: 'save_service_item', id, title,
+      image_url: document.getElementById('svcItemImgUrl').value.trim(),
+      body: bodyCtl ? bodyCtl.getBody() : (currentItem ? currentItem.body : '')
+    })
+      .then(res => {
+        busy(btn, false, label);
+        if (!res.success) { alert(res.error || 'Lỗi khi lưu.'); return; }
+        applyItemToPage(res.item);
+        closeLiveModal('modalLiveEditServiceItem');
+        toast('✓ ' + (res.message || 'Đã lưu mục dịch vụ!'));
+      })
+      .catch(err => { busy(btn, false, label); alert('Lỗi kết nối máy chủ: ' + err); });
+  }
+
+  /** Refresh the accordion entry in place, no reload needed */
+  function applyItemToPage(item) {
+    document.querySelectorAll('.service-item[data-service-id="' + item.id + '"]').forEach(el => {
+      const name = el.querySelector('.service-name');
+      if (name) name.textContent = item.title;
+      const body = el.querySelector('.service-body');
+      if (!body) return;
+      let html = '';
+      if (item.image_src) {
+        html += '<img src="' + item.image_src + '" alt="' + SE.escHtml(item.title) + '" class="service-body-img img-fluid rounded mb-3" loading="lazy">';
+      }
+      body.innerHTML = html + item.body_html;
+      bindTooltipClamp(body);
+    });
+    inject();
+  }
+
+  /** Same viewport clamping main.js applies on page load, for freshly inserted keywords */
+  function bindTooltipClamp(scope) {
+    scope.querySelectorAll('.tuong-tac').forEach(el => {
+      const tip = el.querySelector('.chu-thich');
+      if (!tip || el._clampBound) return;
+      el._clampBound = true;
+      el.addEventListener('mouseenter', () => {
+        if (window.innerWidth < 992) return;
+        tip.style.left = '50%';
+        tip.style.transform = 'translateX(-50%) translateY(0)';
+        const r = tip.getBoundingClientRect(), m = 24;
+        if (r.left < m) tip.style.transform = 'translateX(calc(-50% + ' + (m - r.left) + 'px)) translateY(0)';
+        else if (r.right > window.innerWidth - m) tip.style.transform = 'translateX(calc(-50% - ' + (r.right - (window.innerWidth - m)) + 'px)) translateY(0)';
+      });
+      el.addEventListener('mouseleave', () => { if (window.innerWidth >= 992) tip.style.transform = ''; });
+    });
+  }
+
+  function uploadItemImage(input) {
+    if (!input.files || !input.files[0]) return;
+    const status = document.getElementById('svcItemImgStatus');
+    status.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải lên...';
+    const fd = new FormData();
+    fd.append('action', 'upload_image');
+    fd.append('image', input.files[0]);
+    fd.append('subdir', 'media');
+    fd.append('prefix', 'service');
+    fetch(AJAX, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+      if (!res.success) { status.innerHTML = ''; alert(res.error || 'Lỗi tải ảnh.'); return; }
+      document.getElementById('svcItemImgUrl').value = res.path;
+      document.getElementById('svcItemImgPreview').src = res.full_url;
+      status.innerHTML = '<span style="color:#16A34A;font-weight:700;"><i class="fa-solid fa-circle-check"></i> Đã tải lên, bấm Lưu mục để áp dụng</span>';
+    }).catch(err => { status.innerHTML = ''; alert('Lỗi kết nối máy chủ: ' + err); });
+    input.value = '';
+  }
+
+  // ------------------------------------------------------------------
+  // Tooltip editor
+  // ------------------------------------------------------------------
+  function ensureTipEditor(cb) {
+    if (tipCtl) { tipCtl.ready(cb); return; }
+    tipCtl = SE.create('tipContent', {
+      height: 240,
+      baseHref: BASE,
+      contentsCss: [ADMIN_CSS],
+      baseFloatZIndex: 10000300,
+      toolbar: [
+        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'RemoveFormat'] },
+        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+        { name: 'links', items: ['Link', 'Unlink'] },
+        { name: 'document', items: ['Source'] }
+      ]
+    });
+    tipCtl.ready(cb);
+  }
+
+  function openTip(ref) {
+    post({ action: 'get_tooltip', id: ref.id || 0, keyword: ref.keyword || '' })
+      .then(res => {
+        if (!res.success) { alert(res.error || 'Không tải được tooltip.'); return; }
+        const t = res.tooltip;
+        document.getElementById('tipId').value = t.id;
+        document.getElementById('tipKeyword').value = t.keyword;
+        document.getElementById('tipTitle').value = t.title || '';
+        document.getElementById('tipModalKeyword').innerText = t.keyword || '(mới)';
+        document.getElementById('tipNewNote').style.display = res.exists ? 'none' : 'block';
+        openLiveModal('modalLiveEditTooltip');
+        ensureTipEditor(ctl => ctl.editor.setData(t.content || ''));
+      })
+      .catch(err => alert('Lỗi kết nối máy chủ: ' + err));
+  }
+
+  function saveTip() {
+    const btn = document.getElementById('btnSaveTip');
+    const label = '<i class="fa-solid fa-floppy-disk"></i> Lưu tooltip';
+    const keyword = document.getElementById('tipKeyword').value.trim();
+    if (!keyword) { alert('Từ khoá không được để trống.'); return; }
+    busy(btn, true, label);
+    post({
+      action: 'save_tooltip',
+      id: parseInt(document.getElementById('tipId').value, 10) || 0,
+      keyword,
+      title: document.getElementById('tipTitle').value.trim(),
+      content: tipCtl ? tipCtl.editor.getData() : ''
+    })
+      .then(res => {
+        busy(btn, false, label);
+        if (!res.success) { alert(res.error || 'Lỗi khi lưu tooltip.'); return; }
+        const t = res.tooltip;
+        // refresh every hover panel of this keyword already on the page
+        const key = SE.normalise(t.keyword);
+        document.querySelectorAll('.tuong-tac').forEach(el => {
+          const k = SE.normalise(el.getAttribute('data-tip-key') || '');
+          const sameId = parseInt(el.getAttribute('data-tip-id') || '0', 10) === t.id;
+          if (k === key || sameId) {
+            const note = el.querySelector('.chu-thich');
+            if (note) note.innerHTML = t.note_html;
+            el.setAttribute('data-tip-id', t.id);
+            el.setAttribute('data-tip-key', t.keyword);
+          }
+        });
+        dictMap[key] = { id: t.id, keyword: t.keyword, title: t.title };
+        fillDictSelect();
+        refreshKwList();
+        closeLiveModal('modalLiveEditTooltip');
+        toast('✓ ' + (res.message || 'Đã lưu tooltip!'));
+      })
+      .catch(err => { busy(btn, false, label); alert('Lỗi kết nối máy chủ: ' + err); });
+  }
+
+  // ------------------------------------------------------------------
+  // Wiring
+  // ------------------------------------------------------------------
+  function bind() {
+    const onceBind = (id, ev, fn) => { const el = document.getElementById(id); if (el && !el._svcBound) { el._svcBound = true; el.addEventListener(ev, fn); } };
+    onceBind('btnSaveSvcItem', 'click', saveItem);
+    onceBind('btnSaveTip', 'click', saveTip);
+    onceBind('svcItemImgFile', 'change', function () { uploadItemImage(this); });
+    onceBind('svcItemImgUrl', 'input', function () {
+      const v = this.value.trim();
+      document.getElementById('svcItemImgPreview').src = v ? (/^https?:\/\//.test(v) ? v : BASE + v.replace(/^\//, '')) : '';
+    });
+    onceBind('svcBtnWrap', 'click', () => {
+      if (!bodyCtl) return;
+      const kw = bodyCtl.wrapSelection();
+      if (!kw) return;
+      refreshKwList();
+      if (!dictMap[SE.normalise(kw)]) { tipReturnToItem = true; openTip({ id: 0, keyword: kw }); }
+    });
+    onceBind('svcBtnEditCurrent', 'click', function () {
+      if (!this.dataset.kw) return;
+      const row = dictMap[SE.normalise(this.dataset.kw)];
+      tipReturnToItem = true;
+      openTip({ id: row ? row.id : 0, keyword: this.dataset.kw });
+    });
+    onceBind('svcBtnUnwrap', 'click', () => { if (bodyCtl && bodyCtl.unwrapCurrent()) { refreshKwList(); updateSelBar(null, ''); } });
+    onceBind('svcDictSelect', 'change', function () {
+      if (!this.value || !bodyCtl) return;
+      bodyCtl.insertKeyword(this.value);
+      this.value = '';
+      refreshKwList();
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
+
+  window.vnLiveServices = { inject, openItem, openTip };
+})();
+</script>
+

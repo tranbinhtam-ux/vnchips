@@ -152,9 +152,56 @@ class ServiceTooltip {
             $tip = $dict[$key];
             $note = '<b>' . e($tip['title'] !== '' ? $tip['title'] : $tip['keyword']) . '</b><br><br>' . $tip['content'];
 
-            return '<b class="tuong-tac" tabindex="0">' . e($label)
+            // data-tip-* lets Live Edit open the right dictionary entry from the page itself
+            return '<b class="tuong-tac" tabindex="0" data-tip-id="' . (int)$tip['id'] . '" data-tip-key="' . e($tip['keyword']) . '">' . e($label)
                  . '<span class="chu-thich">' . $note . '</span></b>';
         }, $html);
+    }
+
+    /** The inner HTML of one hover panel, shared by expand() and the Live Edit refresh */
+    public static function renderNote(array $tip) {
+        $title = isset($tip['title']) && $tip['title'] !== '' ? $tip['title'] : ($tip['keyword'] ?? '');
+        return '<b>' . e($title) . '</b><br><br>' . (string)($tip['content'] ?? '');
+    }
+
+    /** Dictionary row for a keyword (case-insensitive), or null */
+    public static function findByKeyword($keyword) {
+        $db = Database::getInstance()->getConnection();
+        if (!$db) return null;
+        try {
+            $stmt = $db->prepare("SELECT * FROM `service_tooltips` WHERE LOWER(`keyword`) = LOWER(:kw) LIMIT 1");
+            $stmt->execute([':kw' => trim(preg_replace('/\s+/u', ' ', (string)$keyword))]);
+            return $stmt->fetch() ?: null;
+        } catch (PDOException $e) {
+            error_log("ServiceTooltip::findByKeyword error: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Keywords referenced by one body ([[label]] or [[label|keyword]]), each with the
+     * matching dictionary row when there is one. Used by the Live Edit item editor.
+     */
+    public static function keywordsIn($html) {
+        $out = [];
+        if (!preg_match_all(self::MARKER_PATTERN, (string)$html, $matches, PREG_SET_ORDER)) {
+            return $out;
+        }
+        $dict = self::dictionary();
+        foreach ($matches as $m) {
+            $keyword = trim(isset($m[2]) && $m[2] !== '' ? $m[2] : $m[1]);
+            $key = self::normalise($keyword);
+            if (isset($out[$key])) continue;
+            $row = $dict[$key] ?? self::findByKeyword($keyword);
+            $out[$key] = [
+                'keyword' => $row ? $row['keyword'] : $keyword,
+                'id'      => $row ? (int)$row['id'] : 0,
+                'title'   => $row ? $row['title'] : '',
+                'active'  => $row ? (int)$row['is_active'] : 0,
+                'has'     => $row ? 1 : 0,
+            ];
+        }
+        return array_values($out);
     }
 
     /** Keywords an editor can insert, for the picker on the item edit screen */
